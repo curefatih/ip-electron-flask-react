@@ -1,0 +1,33 @@
+
+.drag_space {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 100%;
+  width: 100%;
+}
+
+.dashed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+
+  &.active {
+    opacity: 1;
+  }
+}
+
+.drag_here {
+  height: 100%;
+  width: 100%;
+  border: 5px dashed #ffffff;
+  border-radius: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

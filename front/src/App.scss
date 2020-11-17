@@ -1,0 +1,82 @@
+@import "../node_modules/bulma/bulma.sass";
+@import "./components/colors.scss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.App {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.content {
+  height: 100vh;
+  padding: 0;
+  height: 100vh;
+  padding: 0;
+  margin: 0 !important;
+  display: flex;
+
+  .columns {
+    padding: 0;
+    margin: 0;
+  }
+  .column {
+    padding: 0;
+    margin: 0;
+  }
+
+  .canvas_wrapper {
+    background-color: #202020;
+    position: relative;
+
+    #canvas_container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        max-height: 70%;
+        max-width: 70%;
+      }
+    }
+
+    h5 {
+      color: #fff;
+    }
+  }
+
+  .side_menu {
+    background-color: $grey;
+    overflow-y: auto;
+  }
+
+  .options {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+    }
+
+    .option {
+      padding: 3px 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .inputs {
+        width: 100%;
+        text-align: right;
+      }
+    }
+  }
+}

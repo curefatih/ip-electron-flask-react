@@ -1,0 +1,14 @@
+.accordion {
+  .accordion_button {
+  }
+  .accordion_content {
+    // padding: ;
+    display: none;
+
+    &.active{
+      display: block;
+    }
+  }
+
+  margin-bottom: 10px;
+}

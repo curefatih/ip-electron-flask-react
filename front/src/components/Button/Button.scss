@@ -1,0 +1,31 @@
+@import "../colors.scss";
+
+button.button {
+  width: 100%;
+  padding: 10px;
+  background-color: $dark;
+  color: $white;
+  border: none;
+  border-radius: 0;
+  opacity: 0.7;
+  transition: 0.2s ease all;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &.active {
+    opacity: 1;
+    color: $white;
+    background-color: $secondary-dark;
+  }
+
+  &.secondary {
+    background-color: $secondary;
+    color: $black;
+  }
+
+  &.primary {
+    background-color: $primary;
+    color: $white;
+  }
+}

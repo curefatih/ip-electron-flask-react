@@ -1,0 +1,21 @@
+@import "../colors.scss";
+
+.image_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  img {
+    padding: 10px;
+    border: 1px solid $white;
+    border-radius: 0.2em;
+  }
+
+  .percentage{
+    width: 65%;
+  }
+
+  &.hide{
+    display: none;
+  }
+}
