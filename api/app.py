@@ -17,9 +17,12 @@ import image.transform.hough_circle as hc
 import image.transform.integral as integral
 import image.transform.down_scale as ds
 import image.transform.eq_hist as eh
+import image.histogram.show_histogram as sh
 from image.util import to_base64
 from skimage.exposure import equalize_adapthist
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
 def to_byte_data(image) -> str:
 
@@ -63,6 +66,7 @@ def gen_frames():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 @app.route("/rotate", methods=['GET', 'POST'])
 @cross_origin()
 def rotate_route():
@@ -71,6 +75,7 @@ def rotate_route():
     img = imread(imgdata, plugin='imageio')
     img = rotate.rotate_image(img, **opts['parameters'])
     return Response(img)
+
 
 @app.route("/swirl", methods=['GET', 'POST'])
 @cross_origin()
@@ -81,6 +86,7 @@ def swirl_route():
     img = swirl.swirl_image(img, **opts['parameters'])
     return Response(img)
 
+
 @app.route("/gamma", methods=['GET', 'POST'])
 @cross_origin()
 def gamma_route():
@@ -89,6 +95,7 @@ def gamma_route():
     img = imread(imgdata, plugin='imageio')
     img = gamma.run(img, **opts['parameters'])
     return Response(img)
+
 
 @app.route("/eq_hist", methods=['GET', 'POST'])
 @cross_origin()
@@ -99,6 +106,7 @@ def eq_hist_route():
     img = eh.run(img, **opts['parameters'])
     return Response(img)
 
+
 @app.route("/equalize_adapthist", methods=['GET', 'POST'])
 @cross_origin()
 def equalize_adapthist_route():
@@ -106,11 +114,12 @@ def equalize_adapthist_route():
     imgdata = base64.b64decode(opts['img'])
     img = imread(imgdata, plugin='imageio')
     if opts['parameters']['kernel_size'] == 0:
-        opts['parameters']['kernel_size'] = None 
+        opts['parameters']['kernel_size'] = None
     img = to_base64(equalize_adapthist(img, **opts['parameters']))
     return Response(img)
-    
+
 #  -************* NOT WORKING after this
+
 
 @app.route("/hough_circle", methods=['GET', 'POST'])
 @cross_origin()
@@ -121,6 +130,7 @@ def hough_circle_route():
     img = hc.hough_circle_image(img, **opts['parameters'])
     return Response(img)
 
+
 @app.route("/integral_image", methods=['GET', 'POST'])
 @cross_origin()
 def intragral_route():
@@ -129,6 +139,7 @@ def intragral_route():
     img = imread(imgdata, plugin='imageio')
     img = integral.run(img)
     return Response(img)
+
 
 @app.route("/downscale", methods=['GET', 'POST'])
 @cross_origin()
@@ -143,6 +154,15 @@ def down_scale_route():
 
 #  -************* In Processs
 
+@app.route("/show_histogram", methods=['GET', 'POST'])
+@cross_origin()
+def show_histogram_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    # print(img.shape)
+    img = sh.run(img)
+    return Response(img)
 
 
 if __name__ == "__main__":
