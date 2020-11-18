@@ -12,7 +12,7 @@ const Button: React.SFC<ButtonProps> = (props: ButtonProps) => {
   const { className, ...rest } = props
   return (
     <button
-      className={cx("button", className, active ? "active" : "")}
+      className={cx("c-button", className, active ? "active" : "")}
       onClick={(e) => {
         setActive(!active)
         if (props.onClick)

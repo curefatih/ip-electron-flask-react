@@ -27,7 +27,6 @@ def to_base64(image) -> str:
 def to_img(base64_string):
     base64_string += "=" * ((4 - len(base64_string) % 4) % 4)
     if isinstance(base64_string, bytes):
-        print("instance_______")
         base64_string = base64_string.decode("utf-8")
 
     imgdata = base64.b64decode(base64_string)

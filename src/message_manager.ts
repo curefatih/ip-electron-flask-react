@@ -54,4 +54,99 @@ export function MessageManager() {
 
   })
 
+  ipcMain.on('hough_circle', async (event, res) => {
+
+    await serverReq('/hough_circle', JSON.stringify({
+      parameters: res.args,
+      img: res.image
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("hough_circle", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('integral_image', async (event, res) => {
+
+    await serverReq('/integral_image', JSON.stringify({
+      img: res.image
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("integral_image", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('downscale', async (event, res) => {
+
+    await serverReq('/downscale', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("downscale", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('eq_hist', async (event, res) => {
+
+    await serverReq('/eq_hist', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("eq_hist", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('gamma', async (event, res) => {
+
+    await serverReq('/gamma', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("gamma", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('equalize_adapthist', async (event, res) => {
+
+    await serverReq('/equalize_adapthist', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("equalize_adapthist", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
 }

@@ -1,15 +1,18 @@
 @import "../colors.scss";
 
-button.button {
+button.c-button {
   width: 100%;
-  padding: 10px;
   background-color: $dark;
+  padding: 10px;
   color: $white;
   border: none;
   border-radius: 0;
   opacity: 0.7;
   transition: 0.2s ease all;
   outline: none;
+  white-space: normal;
+  height: unset;
+  cursor: pointer;
 
   &:hover,
   &:focus,

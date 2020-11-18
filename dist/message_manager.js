@@ -96,6 +96,119 @@ function MessageManager() {
             }
         });
     }); });
+    electron_1.ipcMain.on('hough_circle', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/hough_circle', JSON.stringify({
+                        parameters: res.args,
+                        img: res.image
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("hough_circle", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('integral_image', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/integral_image', JSON.stringify({
+                        img: res.image
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("integral_image", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('downscale', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/downscale', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("downscale", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('eq_hist', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/eq_hist', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("eq_hist", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('gamma', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/gamma', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("gamma", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('equalize_adapthist', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/equalize_adapthist', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("equalize_adapthist", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 }
 exports.MessageManager = MessageManager;
 //# sourceMappingURL=message_manager.js.map

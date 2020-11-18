@@ -55,6 +55,17 @@ body,
   .side_menu {
     background-color: $grey;
     overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+      background-color: #202020;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $white;
+      border-radius: 0.1em;
+    }
   }
 
   .options {
