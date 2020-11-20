@@ -77,6 +77,14 @@ function MessageManager() {
             }
         });
     }); });
+    electron_1.ipcMain.on('saveFile', function (event, img) {
+        var base64Data = img.replace(/^data:image\/png;base64,/, "");
+        require("fs").writeFile("out.png", base64Data, 'base64', function (err) {
+            if (err)
+                event.reply('error', err.message);
+            event.reply('saveFile', 'Görüntü etkin dizine "out.png" adında kaydedildi.');
+        });
+    });
     electron_1.ipcMain.on('swirl', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -314,6 +322,158 @@ function MessageManager() {
                         .then(function (res) { return res.text(); })
                         .then(function (res) {
                         event.reply("affine_transform", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('sato', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/sato', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("sato", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('sobel', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/sobel', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("sobel", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('prewitt', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/prewitt', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("prewitt", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('laplace', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/laplace', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("laplace", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('unsharp_mask', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/unsharp_mask', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("unsharp_mask", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('meijering', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/meijering', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("meijering", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('scharr', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/scharr', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("scharr", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('hysteresis_threshold', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/hysteresis_threshold', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("hysteresis_threshold", res);
                     })["catch"](function (err) {
                         console.log(err);
                     })];

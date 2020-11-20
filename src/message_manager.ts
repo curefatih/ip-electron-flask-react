@@ -38,6 +38,17 @@ export function MessageManager() {
 
   })
 
+  ipcMain.on('saveFile', (event, img) => {
+    let base64Data = img.replace(/^data:image\/png;base64,/, "");
+    require("fs").writeFile("out.png", base64Data, 'base64', function (err: Error) {
+      if (err)
+        event.reply('error', err.message)
+
+      event.reply('saveFile', 'Görüntü etkin dizine "out.png" adında kaydedildi.')
+    });
+  })
+
+
   ipcMain.on('swirl', async (event, res) => {
 
     await serverReq('/swirl', JSON.stringify({
@@ -148,7 +159,7 @@ export function MessageManager() {
       })
 
   })
-  
+
   ipcMain.on('show_histogram', async (event, res) => {
 
     await serverReq('/show_histogram', JSON.stringify({
@@ -228,7 +239,7 @@ export function MessageManager() {
       })
 
   })
-  
+
   ipcMain.on('affine_transform', async (event, res) => {
 
     await serverReq('/affine_transform', JSON.stringify({
@@ -244,4 +255,133 @@ export function MessageManager() {
       })
 
   })
+
+  ipcMain.on('sato', async (event, res) => {
+
+    await serverReq('/sato', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("sato", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('sobel', async (event, res) => {
+
+    await serverReq('/sobel', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("sobel", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('prewitt', async (event, res) => {
+
+    await serverReq('/prewitt', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("prewitt", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('laplace', async (event, res) => {
+
+    await serverReq('/laplace', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("laplace", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('unsharp_mask', async (event, res) => {
+
+    await serverReq('/unsharp_mask', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("unsharp_mask", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('meijering', async (event, res) => {
+
+    await serverReq('/meijering', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("meijering", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('scharr', async (event, res) => {
+
+    await serverReq('/scharr', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("scharr", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('hysteresis_threshold', async (event, res) => {
+
+    await serverReq('/hysteresis_threshold', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("hysteresis_threshold", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
 }

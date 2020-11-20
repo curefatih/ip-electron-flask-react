@@ -20,12 +20,22 @@ import image.transform.down_scale as ds
 import image.transform.integral as integral
 import image.transform.resize as resize
 import image.transform.affine_transform as affine_t
-
 import image.transform.eq_hist as eh
-import image.exposure.gamma as gamma
-import image.histogram.show_histogram as sh
+
 import image.filters.window as window
 import image.filters.median as median
+import image.filters.sato as sato
+import image.filters.sobel as sobel
+import image.filters.prewitt as prewitt
+import image.filters.laplace as laplace
+import image.filters.unsharp_mask as unsharp_mask
+import image.filters.meijering as meijering
+import image.filters.scharr as scharr
+import image.filters.hysteresis_threshold as hysteresis_threshold
+
+
+import image.exposure.gamma as gamma
+import image.histogram.show_histogram as sh
 from image.util import to_base64
 from skimage.exposure import equalize_adapthist
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -179,6 +189,7 @@ def crop_route():
     img = crop.run(img, **opt)
     return Response(img)
 
+
 @app.route("/resize", methods=['GET', 'POST'])
 @cross_origin()
 def resize_route():
@@ -188,41 +199,6 @@ def resize_route():
     img = resize.run(img, **opts['parameters'])
     return Response(img)
 
-#  -************* NOT WORKING after this
-
-
-@app.route("/hough_circle", methods=['GET', 'POST'])
-@cross_origin()
-def hough_circle_route():
-    opts = request.get_json()
-    imgdata = base64.b64decode(opts['img'])
-    img = imread(imgdata, plugin='imageio')
-    img = hc.hough_circle_image(img, **opts['parameters'])
-    return Response(img)
-
-
-@app.route("/integral_image", methods=['GET', 'POST'])
-@cross_origin()
-def intragral_route():
-    opts = request.get_json()
-    imgdata = base64.b64decode(opts['img'])
-    img = imread(imgdata, plugin='imageio')
-    img = integral.run(img)
-    return Response(img)
-
-
-@app.route("/downscale", methods=['GET', 'POST'])
-@cross_origin()
-def down_scale_route():
-    opts = request.get_json()
-    imgdata = base64.b64decode(opts['img'])
-    img = imread(imgdata, plugin='imageio')
-    # print(img.shape)
-    img = ds.run(img, **opts['parameters'])
-    return Response(img)
-
-
-#  -************* In Processs
 
 @app.route("/affine_transform", methods=['GET', 'POST'])
 @cross_origin()
@@ -232,6 +208,88 @@ def affine_trasnform_route():
     img = imread(imgdata, plugin='imageio')
     img = affine_t.run(img, **opts['parameters'])
     return Response(img)
+
+
+@app.route("/sato", methods=['GET', 'POST'])
+@cross_origin()
+def sato_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = sato.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/sobel", methods=['GET', 'POST'])
+@cross_origin()
+def sobel_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = sobel.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/prewitt", methods=['GET', 'POST'])
+@cross_origin()
+def prewitt_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = prewitt.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/laplace", methods=['GET', 'POST'])
+@cross_origin()
+def laplace_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = laplace.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/unsharp_mask", methods=['GET', 'POST'])
+@cross_origin()
+def unsharp_mask_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = unsharp_mask.run(img, **opts['parameters'])
+    return Response(img)
+
+@app.route("/meijering", methods=['GET', 'POST'])
+@cross_origin()
+def meijering_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = meijering.run(img, **opts['parameters'])
+    return Response(img)
+
+@app.route("/scharr", methods=['GET', 'POST'])
+@cross_origin()
+def scharr_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = scharr.run(img, **opts['parameters'])
+    return Response(img)
+
+#  -************* NOT WORKING after this
+
+#  -************* In Processs
+
+@app.route("/hysteresis_threshold", methods=['GET', 'POST'])
+@cross_origin()
+def hysteresis_threshold_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = hysteresis_threshold.run(img, **opts['parameters'])
+    return Response(img)
+
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5001, debug=True)

@@ -7,6 +7,7 @@ import Dragable from './components/Dragable/Dragable';
 import ImgContainer from './components/ImgContainer/ImgContainer';
 import ImageViewer from './components/ImageViewer/ImageViewer';
 import ErrorPop from './components/ErrorPop/ErrorPop';
+import SuccessPop from './components/SuccessPop/SuccessPop';
 import Loading from './components/Loading/Loading';
 
 import cx from 'classnames';
@@ -43,7 +44,9 @@ function App() {
     currentDisplay: "INITIAL",
     processedImgSrc: "",
     warningMessage: "",
-    showWarningMessage: false
+    showWarningMessage: false,
+    succesMessage: "",
+    showSuccessMessage: false
   })
 
   const [histogramModal, setHistogramModal] = React.useState({
@@ -99,6 +102,52 @@ function App() {
     translation: [0, 0]
   })
 
+  const [sato, setSato] = React.useState({
+    black_ridges: true,
+    mode: 'constant',
+    cval: 0.0,
+  })
+
+  const [sobel, setSobel] = React.useState({
+    axis: 0,
+    mode: 'constant',
+    cval: 0.0,
+  })
+
+  const [prewitt, setPrewitt] = React.useState({
+    axis: 0,
+    mode: 'constant',
+    cval: 0.0,
+  })
+
+  const [laplace, setLaplace] = React.useState({
+    ksize: 3
+  })
+
+  const [unsharp, setUnsharp] = React.useState({
+    radius: 0,
+    amount: 0,
+    multichannel: false,
+  })
+
+  const [meijering, setMeijering] = React.useState({
+    alpha: 0,
+    black_ridges: true,
+    mode: 'constant',
+    cval: 0.0,
+  })
+
+  const [scharr, setScharr] = React.useState({
+    axis: 0,
+    mode: 'constant',
+    cval: 0.0,
+  })
+
+  const [hysteresis, setHysteresis] = React.useState({
+    low: 0,
+    high: 0
+  })
+
   const dataOrError = React.useCallback((str, type) => {
     const data: string = str.toString()
     if (isBase64(data)) {
@@ -118,12 +167,34 @@ function App() {
     }
   }, [])
 
+  const saveFileHandler = React.useCallback((message: string) => {
+    setStates({
+      ...states,
+      isLoading: false,
+      showSuccessMessage: true,
+      succesMessage: message
+    })
+  }, [states])
+
   React.useEffect(() => {
 
     ipcRenderer.on('openFile', (event: any, base64: string) => {
       setStates({
         ...states,
         initialImage: base64.toString()
+      })
+    })
+
+    ipcRenderer.on('saveFile', (event: any, message: string) => {
+      saveFileHandler(message)
+    })
+
+    ipcRenderer.on('error', (event: any, message: string) => {
+      setStates({
+        ...states,
+        isLoading: false,
+        showWarningMessage: true,
+        warningMessage: message
       })
     })
 
@@ -148,7 +219,6 @@ function App() {
     })
 
     ipcRenderer.on('show_histogram', (event: any, base64: string) => {
-      // setStates({ ...states, isLoading: false })
       const data = base64.toString()
       if (isBase64(data))
         setHistogramModal({
@@ -174,14 +244,46 @@ function App() {
       dataOrError(base64, "RESIZE")
     })
 
+    ipcRenderer.on('affine_transform', (event: any, base64: string) => {
+      dataOrError(base64, "AFFINE_TRANSFORM")
+    })
+
+    ipcRenderer.on('sato', (event: any, base64: string) => {
+      dataOrError(base64, "SATO")
+    })
+
+    ipcRenderer.on('sobel', (event: any, base64: string) => {
+      dataOrError(base64, "SOBEL")
+    })
+
+    ipcRenderer.on('prewitt', (event: any, base64: string) => {
+      dataOrError(base64, "PREWITT")
+    })
+
+    ipcRenderer.on('laplace', (event: any, base64: string) => {
+      dataOrError(base64, "LAPLACE")
+    })
+
+    ipcRenderer.on('unsharp_mask', (event: any, base64: string) => {
+      dataOrError(base64, "UNSHARP_MASK")
+    })
+
+    ipcRenderer.on('meijering', (event: any, base64: string) => {
+      dataOrError(base64, "MEIJERING")
+    })
+
+    ipcRenderer.on('scharr', (event: any, base64: string) => {
+      dataOrError(base64, "SCHARR")
+    })
+
+    ipcRenderer.on('hysteresis_threshold', (event: any, base64: string) => {
+      dataOrError(base64, "HYSTERESIS_THRESHOLD")
+    })
+
     /*****************************not working */
 
 
     /***************************** in progress */
-
-    ipcRenderer.on('affine_transform', (event: any, base64: string) => {
-      dataOrError(base64, "AFFINE_TRANSFORM")
-    })
 
   }, [])
 
@@ -243,6 +345,46 @@ function App() {
   const handleAffineTransformButtonClick = () => {
     setStates({ ...states, isLoading: true })
     ipcRenderer.send('affine_transform', { args: affineTransform, image: states.initialImage })
+  }
+
+  const handleSatoButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('sato', { args: sato, image: states.initialImage })
+  }
+
+  const handleSobelButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('sobel', { args: sobel, image: states.initialImage })
+  }
+
+  const handlePrewittButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('prewitt', { args: prewitt, image: states.initialImage })
+  }
+
+  const handleLaplaceButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('laplace', { args: laplace, image: states.initialImage })
+  }
+
+  const handleUnsharpMaskButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('unsharp_mask', { args: unsharp, image: states.initialImage })
+  }
+
+  const handleMeijeringButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('meijering', { args: meijering, image: states.initialImage })
+  }
+
+  const handleScharrButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('scharr', { args: scharr, image: states.initialImage })
+  }
+
+  const handleHysteresisThresholdButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('hysteresis_threshold', { args: hysteresis, image: states.initialImage })
   }
 
   return (
@@ -325,7 +467,16 @@ function App() {
                   window.ipcRenderer.send('openFile', e.dataTransfer.files[0].path)
               }} />
             : null}
-
+          {!states.showVideo && states.initialImage !== "" ?
+            <div className="download-button">
+              <Button
+                onClick={() => {
+                  setStates({ ...states, isLoading: true })
+                  ipcRenderer.send('saveFile', states.initialImage)
+                }}
+              >
+                Görüntüyü kaydet</Button>
+            </div> : null}
 
           <ImageViewer
             show={histogramModal.showHistogramModal}
@@ -441,7 +592,467 @@ function App() {
               >Median</Button>
             </div>
 
+            <div className="sato">
+              <div className="options mb-3">
 
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Sigmas</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Black_ridged</h6>
+                  </div>
+                  <div className="inputs column">
+                    <input
+                      checked={sato.black_ridges}
+                      onChange={(e) => setSato({ ...sato, black_ridges: e.target.checked })}
+                      type="checkbox"
+                    />
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select value={sato.mode} onChange={(e) => setSato({ ...sato, mode: e.target.value })}>
+                      <option value="constant">constant</option>
+                      <option value="reflect">reflect</option>
+                      <option value="wrap">wrap</option>
+                      <option value="nearest">nearest</option>
+                      <option value="mirror">mirror</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={sato.cval}
+                      onChange={(e) => setSato({ ...sato, cval: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleSatoButtonClick}
+              >Sato</Button>
+            </div>
+
+            <div className="sobel">
+              <div className="options mb-3">
+
+                <div className="mask option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mask</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="axis option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Axis</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="axis"
+                      type="number"
+                      value={sobel.axis}
+                      onChange={(e) => setSobel({ ...sobel, axis: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select value={sobel.mode} onChange={(e) => setSobel({ ...sobel, mode: e.target.value })}>
+                      <option value="constant">constant</option>
+                      <option value="reflect">reflect</option>
+                      <option value="wrap">wrap</option>
+                      <option value="nearest">nearest</option>
+                      <option value="mirror">mirror</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={sobel.cval}
+                      onChange={(e) => setSobel({ ...sobel, cval: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleSobelButtonClick}
+              >Sobel</Button>
+            </div>
+
+            <div className="prewitt">
+              <div className="options mb-3">
+
+                <div className="mask option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mask</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="axis option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Axis</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="axis"
+                      type="number"
+                      value={sobel.axis}
+                      onChange={(e) => setPrewitt({ ...prewitt, axis: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select value={sobel.mode} onChange={(e) => setPrewitt({ ...prewitt, mode: e.target.value })}>
+                      <option value="constant">constant</option>
+                      <option value="reflect">reflect</option>
+                      <option value="wrap">wrap</option>
+                      <option value="nearest">nearest</option>
+                      <option value="mirror">mirror</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={sobel.cval}
+                      onChange={(e) => setPrewitt({ ...prewitt, cval: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handlePrewittButtonClick}
+              >Prewitt</Button>
+            </div>
+
+            <div className="laplace">
+              <div className="options mb-3">
+
+                <div className="mask option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mask</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="ksize option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Ksize</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={laplace.ksize}
+                      onChange={(e) => setLaplace({ ...laplace, ksize: parseInt(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleLaplaceButtonClick}
+              >Laplace</Button>
+            </div>
+
+            <div className="unsharp_mask">
+              <div className="options mb-3">
+
+                <div className="radius option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Radius</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="radius"
+                      type="number"
+                      value={unsharp.radius}
+                      onChange={(e) => setUnsharp({ ...unsharp, radius: parseInt(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="amount option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Amount</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="amount"
+                      type="number"
+                      value={unsharp.amount}
+                      onChange={(e) => setUnsharp({ ...unsharp, amount: parseInt(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="multichannel option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Multichannel</h6>
+                  </div>
+                  <div className="inputs column">
+                    <input
+                      type="checkbox"
+                      checked={unsharp.multichannel}
+                      onChange={(e) => setUnsharp({ ...unsharp, multichannel: e.target.checked })}
+                    />
+                  </div>
+                </div>
+
+                <div className="preserve_range option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Preserve range</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>* float dönüşümüne zorlanmaması için "False" kabul edildi.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleUnsharpMaskButtonClick}
+              >Unsharp Mask</Button>
+            </div>
+
+            <div className="meijering">
+              <div className="options mb-3">
+
+                <div className="sigmas option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Sigmas</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="alpha option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Alpha</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={meijering.alpha}
+                      onChange={(e) => setMeijering({ ...meijering, alpha: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Black_ridged</h6>
+                  </div>
+                  <div className="inputs column">
+                    <input
+                      checked={meijering.black_ridges}
+                      onChange={(e) => setMeijering({ ...meijering, black_ridges: e.target.checked })}
+                      type="checkbox"
+                    />
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select value={meijering.mode} onChange={(e) => setMeijering({ ...meijering, mode: e.target.value })}>
+                      <option value="constant">constant</option>
+                      <option value="reflect">reflect</option>
+                      <option value="wrap">wrap</option>
+                      <option value="nearest">nearest</option>
+                      <option value="mirror">mirror</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={meijering.cval}
+                      onChange={(e) => setMeijering({ ...meijering, cval: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleMeijeringButtonClick}
+              >Meijering</Button>
+            </div>
+
+            <div className="scharr">
+              <div className="options mb-3">
+
+                <div className="mask option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mask</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="axis option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Axis</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="axis"
+                      type="number"
+                      value={scharr.axis}
+                      onChange={(e) => setScharr({ ...scharr, axis: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select value={scharr.mode} onChange={(e) => setScharr({ ...scharr, mode: e.target.value })}>
+                      <option value="constant">constant</option>
+                      <option value="reflect">reflect</option>
+                      <option value="wrap">wrap</option>
+                      <option value="nearest">nearest</option>
+                      <option value="mirror">mirror</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="cval"
+                      type="number"
+                      value={scharr.cval}
+                      onChange={(e) => setScharr({ ...scharr, cval: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleScharrButtonClick}
+              >Scharr</Button>
+            </div>
+
+            <div className="hysteresis_threshold">
+              <div className="options mb-3">
+
+                <div className="axis option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Low</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="low"
+                      type="number"
+                      value={hysteresis.low}
+                      onChange={(e) => setHysteresis({ ...hysteresis, low: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>High</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="high"
+                      type="number"
+                      value={hysteresis.high}
+                      onChange={(e) => setHysteresis({ ...hysteresis, high: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleHysteresisThresholdButtonClick}
+              >Hysteresis Threshold</Button>
+            </div>
+
+          </Accordion>
+
+          <Accordion title="Morfolojik işlemler">
 
           </Accordion>
 
@@ -705,7 +1316,7 @@ function App() {
             <div className="affine_trasnform">
               <div className="options mb-3">
 
-              <div className="matrix option columns">
+                <div className="matrix option columns">
                   <div className="option_title column has-text-centered">
                     <h6>Matrix</h6>
                   </div>
@@ -781,9 +1392,6 @@ function App() {
             </div>
 
           </Accordion>
-
-
-
 
 
           <Accordion title="Yoğunluk Dönüşüm İşlemleri">
@@ -906,6 +1514,13 @@ function App() {
         message={`Uygulama esnasında hata meydana geldi.\n Parametrelerin doğruluğundan ve görüntünün varlığından emin olun.`}
         show={states.showWarningMessage}
         onClose={() => setStates({ ...states, showWarningMessage: false })}
+      />
+
+      <SuccessPop
+        success={states.succesMessage || ""}
+        message={`İşlem başarılı`}
+        show={states.showSuccessMessage}
+        onClose={() => setStates({ ...states, showSuccessMessage: false })}
       />
     </div >
   );

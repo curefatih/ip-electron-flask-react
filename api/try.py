@@ -1,28 +1,46 @@
-import numpy as np
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from skimage.color import rgb2gray
+# from skimage import data, io, color
+# from skimage.filters import gaussian, sato
+# from skimage.segmentation import active_contour
+
+
+# img = data.astronaut()
+
+# img = sato(img, mode='constant')
+
+# io.imshow(img)
+
+# plt.show()
 import matplotlib.pyplot as plt
-from skimage.color import rgb2gray
-from skimage import data
-from skimage.filters import gaussian
-from skimage.segmentation import active_contour
+from skimage import data, io
+# from skimage import filters
+# camera = data.camera()
+# edges = filters.sobel(camera)
 
+# io.imshow(edges)
+# plt.show()
 
-img = data.astronaut()
-img = rgb2gray(img)
+# from skimage.filters import laplace
+# import numpy as np
+# im = rgb2gray(imread('../images/me8.jpg'))
+# im1 = np.clip(laplace(im) + im, 0, 1)
+# pylab.figure(figsize=(20,30))
+# pylab.subplot(211), 
+# plot_image(im, 'original image')
+# pylab.subplot(212), 
+# plot_image(im1, 'sharpened image')
+# pylab.tight_layout()
+# pylab.show()
 
-s = np.linspace(0, 2*np.pi, 400)
-r = 100 + 100*np.sin(s)
-c = 220 + 100*np.cos(s)
-init = np.array([r, c]).T
+from skimage.data import coins
+from skimage.filters import threshold_isodata, scharr
 
-snake = active_contour(gaussian(img, 3),
-                       init, alpha=0.015, beta=10, gamma=0.001,
-                       coordinates='rc')
+image = coins()
+thresh = threshold_isodata(image)
+binary = image > thresh
+edge_scharr = scharr(image)
 
-fig, ax = plt.subplots(figsize=(7, 7))
-ax.imshow(img, cmap=plt.cm.gray)
-ax.plot(init[:, 1], init[:, 0], '--r', lw=3)
-ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
-ax.set_xticks([]), ax.set_yticks([])
-ax.axis([0, img.shape[1], img.shape[0], 0])
-
+io.imshow(edge_scharr)
 plt.show()
