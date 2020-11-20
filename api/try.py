@@ -1,48 +1,28 @@
-from skimage import data, io, exposure, color
-from io import BytesIO
-import base64
-
-
-# I = data.chelsea()
-# print(I)
-# io.imshow(I)
-# io.show()
-# I_eq = exposure.equalize_hist(I)
-# io.imshow(I_eq)
-# io.show()
-
+import numpy as np
 import matplotlib.pyplot as plt
-from skimage import exposure
+from skimage.color import rgb2gray
+from skimage import data
+from skimage.filters import gaussian
+from skimage.segmentation import active_contour
 
 
-def run(img):
-    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(8, 4))
-    for ax in axes[1, :]:
-        ax.remove()
-    for c, c_color in enumerate(('red', 'green', 'blue')):
-        img_hist, bins = exposure.histogram(img[..., c], source_range='dtype')
-        axes[0, c].plot(bins, img_hist / img_hist.max())
-        img_cdf, bins = exposure.cumulative_distribution(img[..., c])
-        axes[0, c].plot(bins, img_cdf)
-        axes[0, c].set_ylabel(c_color)
+img = data.astronaut()
+img = rgb2gray(img)
 
-    img_gray = color.rgb2gray(img)
-    hist, hist_centers = exposure.histogram(color.rgb2gray(img))
-    img_cdf, bins = exposure.cumulative_distribution(img_gray)
-    gs = axes[1, 2].get_gridspec()
+s = np.linspace(0, 2*np.pi, 400)
+r = 100 + 100*np.sin(s)
+c = 220 + 100*np.cos(s)
+init = np.array([r, c]).T
 
-    axs_gray = fig.add_subplot(gs[1:, :])
-    axs_gray.plot(bins, hist / hist.max())
-    img_cdf, bins = exposure.cumulative_distribution(img_gray)
-    axs_gray.plot(bins, img_cdf)
-    axs_gray.set_ylabel("gray")
+snake = active_contour(gaussian(img, 3),
+                       init, alpha=0.015, beta=10, gamma=0.001,
+                       coordinates='rc')
 
-    axes[0, 1].set_title('Histogram')
-    plt.tight_layout()
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
-    plt.show()
+fig, ax = plt.subplots(figsize=(7, 7))
+ax.imshow(img, cmap=plt.cm.gray)
+ax.plot(init[:, 1], init[:, 0], '--r', lw=3)
+ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
+ax.set_xticks([]), ax.set_yticks([])
+ax.axis([0, img.shape[1], img.shape[0], 0])
 
-
-run(data.chelsea())
+plt.show()

@@ -149,4 +149,67 @@ export function MessageManager() {
 
   })
   
+  ipcMain.on('show_histogram', async (event, res) => {
+
+    await serverReq('/show_histogram', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("show_histogram", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('window', async (event, res) => {
+
+    await serverReq('/window', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("window", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('median', async (event, res) => {
+
+    await serverReq('/median', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("median", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('crop', async (event, res) => {
+
+    await serverReq('/crop', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("crop", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
 }

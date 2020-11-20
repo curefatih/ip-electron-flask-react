@@ -1,11 +1,19 @@
+@import "../colors.scss";
+
 .accordion {
   .accordion_button {
+    // margin-bottom: 5px;
   }
   .accordion_content {
-    // padding: ;
+    padding:10px;
+    background-color: $dark;
+    margin-bottom: 20px;
+    h6 {
+      color: $white;
+    }
     display: none;
 
-    &.active{
+    &.active {
       display: block;
     }
   }

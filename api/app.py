@@ -9,18 +9,23 @@ from skimage.io import imread, imshow, show
 from skimage import feature, color, img_as_ubyte, img_as_ubyte
 import cv2
 import numpy as np
+from werkzeug.exceptions import HTTPException
 from PIL import Image, ImageFile
+
 import image.transform.rotate as rotate
-import image.transform.swirl as swirl
-import image.exposure.gamma as gamma
+import image.transform.crop as crop
 import image.transform.hough_circle as hc
-import image.transform.integral as integral
+import image.transform.swirl as swirl
 import image.transform.down_scale as ds
+import image.transform.integral as integral
+
 import image.transform.eq_hist as eh
+import image.exposure.gamma as gamma
 import image.histogram.show_histogram as sh
+import image.filters.window as window
+import image.filters.median as median
 from image.util import to_base64
 from skimage.exposure import equalize_adapthist
-
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
@@ -59,6 +64,16 @@ def gen_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
     camera.release()
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # pass through HTTP errors
+    if isinstance(e, HTTPException):
+        return e
+
+    # now you're handling non-HTTP exceptions only
+    return {'err_type': type(e).__name__, 'err_message': str(e)}, 400
 
 
 @app.route("/video_feed", methods=['GET', 'POST'])
@@ -118,6 +133,51 @@ def equalize_adapthist_route():
     img = to_base64(equalize_adapthist(img, **opts['parameters']))
     return Response(img)
 
+
+@app.route("/show_histogram", methods=['GET', 'POST'])
+@cross_origin()
+def show_histogram_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    # print(img.shape)
+    img = sh.run(img)
+    return Response(img)
+
+
+@app.route("/window", methods=['GET', 'POST'])
+@cross_origin()
+def window_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = window.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/median", methods=['GET', 'POST'])
+@cross_origin()
+def median_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = median.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/crop", methods=['GET', 'POST'])
+@cross_origin()
+def crop_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    opt = {
+        'crop_width': tuple([tuple(opts['parameters']['y']), tuple(opts['parameters']['x']), (0, 0)])
+    }
+    img = crop.run(img, **opt)
+    return Response(img)
+
+
 #  -************* NOT WORKING after this
 
 
@@ -153,16 +213,6 @@ def down_scale_route():
 
 
 #  -************* In Processs
-
-@app.route("/show_histogram", methods=['GET', 'POST'])
-@cross_origin()
-def show_histogram_route():
-    opts = request.get_json()
-    imgdata = base64.b64decode(opts['img'])
-    img = imread(imgdata, plugin='imageio')
-    # print(img.shape)
-    img = sh.run(img)
-    return Response(img)
 
 
 if __name__ == "__main__":

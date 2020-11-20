@@ -53,9 +53,14 @@ body,
   }
 
   .side_menu {
-    background-color: $grey;
+    position: relative;
+    background-color: transparentize($color: $dark, $amount: 0.3);
     overflow-y: auto;
     overflow-x: hidden;
+
+    button.secondary{
+      margin-bottom: 20px;
+    }
 
     &::-webkit-scrollbar {
       width: 5px;

@@ -5,20 +5,32 @@ import Accordion from './components/Accordion/Accordion';
 import Input from './components/Input/Input';
 import Dragable from './components/Dragable/Dragable';
 import ImgContainer from './components/ImgContainer/ImgContainer';
+import ImageViewer from './components/ImageViewer/ImageViewer';
+import ErrorPop from './components/ErrorPop/ErrorPop';
+import Loading from './components/Loading/Loading';
+
+import cx from 'classnames';
 declare global {
   interface Window { ipcRenderer: any; }
 }
 
 const ipcRenderer = window.ipcRenderer || {}
 const videoURL = 'http://127.0.0.1:5001/video_feed';
-
+function isBase64(str: string) {
+  if (str === '' || str.trim() === '') { return false; }
+  try {
+    return btoa(atob(str)) == str;
+  } catch (err) {
+    return false;
+  }
+}
 function App() {
   const contentRef = React.useRef(null);
 
   const [states, setStates] = React.useState({
     showVideo: false,
     showedVideoURL: "",
-    loadingInitialImage: "",
+    isLoading: false,
     initialImage: "",
     initialImageSize: {
       width: 0,
@@ -29,7 +41,14 @@ function App() {
       height: 0
     },
     currentDisplay: "INITIAL",
-    processedImgSrc: ""
+    processedImgSrc: "",
+    warningMessage: "",
+    showWarningMessage: false
+  })
+
+  const [histogramModal, setHistogramModal] = React.useState({
+    showHistogramModal: false,
+    histogramImageData: ""
   })
 
   const [transform, setTransform] = React.useState({
@@ -72,6 +91,34 @@ function App() {
     nbins: 256
   })
 
+  const [windowFilter, setWindow] = React.useState({
+    window_type: "hann"
+  })
+
+  const [crop, setCrop] = React.useState({
+    x: [0, 0],
+    y: [0, 0]
+  })
+
+  const dataOrError = React.useCallback((str, type) => {
+    const data: string = str.toString()
+    if (isBase64(data)) {
+      setStates({
+        ...states,
+        isLoading: false,
+        currentDisplay: type,
+        initialImage: data
+      })
+    } else {
+      setStates({
+        ...states,
+        isLoading: false,
+        warningMessage: str,
+        showWarningMessage: true
+      })
+    }
+  }, [])
+
   React.useEffect(() => {
 
     ipcRenderer.on('openFile', (event: any, base64: string) => {
@@ -82,43 +129,46 @@ function App() {
     })
 
     ipcRenderer.on('rotate', (event: any, base64: string) => {
-      setStates({
-        ...states,
-        currentDisplay: "ROTATE",
-        initialImage: base64.toString()
-      })
+      dataOrError(base64, "ROTATE")
     })
 
     ipcRenderer.on('swirl', (event: any, base64: string) => {
-      setStates({
-        ...states,
-        currentDisplay: "SWIRL",
-        initialImage: base64.toString()
-      })
+      dataOrError(base64, "SWIRL")
     })
 
     ipcRenderer.on('gamma', (event: any, base64: string) => {
-      setStates({
-        ...states,
-        currentDisplay: "GAMMA",
-        initialImage: base64.toString()
-      })
+      dataOrError(base64, "GAMMA")
     })
 
     ipcRenderer.on('equalize_adapthist', (event: any, base64: string) => {
-      setStates({
-        ...states,
-        currentDisplay: "EQ_ADAPT_HIST",
-        initialImage: base64.toString()
-      })
+      dataOrError(base64, "EQ_ADAPT_HIST")
     })
 
     ipcRenderer.on('eq_hist', (event: any, base64: string) => {
-      setStates({
-        ...states,
-        currentDisplay: "EQ_HIST",
-        initialImage: base64.toString()
-      })
+      dataOrError(base64, "EQ_HIST")
+    })
+
+    ipcRenderer.on('show_histogram', (event: any, base64: string) => {
+      // setStates({ ...states, isLoading: false })
+      const data = base64.toString()
+      if (isBase64(data))
+        setHistogramModal({
+          ...histogramModal,
+          showHistogramModal: true,
+          histogramImageData: 'data:image/png;base64,' + base64.toString()
+        })
+    })
+
+    ipcRenderer.on('window', (event: any, base64: string) => {
+      dataOrError(base64, "WINDOW")
+    })
+
+    ipcRenderer.on('median', (event: any, base64: string) => {
+      dataOrError(base64, "MEDIAN")
+    })
+
+    ipcRenderer.on('crop', (event: any, base64: string) => {
+      dataOrError(base64, "CROP")
     })
 
 
@@ -141,47 +191,79 @@ function App() {
 
       setStates({
         ...states,
+        isLoading: false,
         currentDisplay: "DOWNSCALE",
         initialImage: base64.toString()
       })
     })
 
-
-
-
+    /***************************** in progress */
 
   }, [])
 
+  React.useEffect(() => {
+    console.log(states);
+
+  }, [states])
+
   const handleRotate = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('rotate', { args: transform, image: states.initialImage })
   }
 
   const handleSwirlButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('swirl', { args: swirl, image: states.initialImage })
   }
 
   const handleHoughCircleButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('hough_circle', { args: houghCircle, image: states.initialImage })
   }
 
   const handleIntegralButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('integral_image', { image: states.initialImage })
   }
 
   const handleDownscaleButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('downscale', { args: downscale, image: states.initialImage })
   }
 
   const handleEqHistButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('eq_hist', { args: eqHist, image: states.initialImage })
   }
 
   const handleGammaButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('gamma', { args: gamma, image: states.initialImage })
   }
 
   const handleEqAdaptHistButtonClick = () => {
+    setStates({ ...states, isLoading: true })
     ipcRenderer.send('equalize_adapthist', { args: equalizeAdaptHist, image: states.initialImage })
+  }
+
+  const handleShowHistogramButtonClick = () => {
+    // setStates({ ...states, isLoading: true })
+    ipcRenderer.send('show_histogram', { image: states.initialImage })
+  }
+
+  const handleWindowButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('window', { args: windowFilter, image: states.initialImage })
+  }
+
+  const handleMedianButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('median', { args: {}, image: states.initialImage })
+  }
+
+  const handleCropButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('crop', { args: crop, image: states.initialImage })
   }
 
   return (
@@ -257,14 +339,137 @@ function App() {
                 window.ipcRenderer.send('openFile', e.dataTransfer.files[0].path)
               }} />
             : null}
+
+
+          <ImageViewer
+            show={histogramModal.showHistogramModal}
+            src={histogramModal.histogramImageData}
+            onClose={() => setHistogramModal({ ...histogramModal, showHistogramModal: false })}
+          />
         </div>
 
         <div className="column side_menu">
           <Accordion title="Görüntü iyileştirme">
-            123
-         </Accordion>
+            <div className="window">
+              <div className="options mb-3">
+
+                <div className="window_type option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Window_type</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select onChange={(e) => setWindow({ ...windowFilter, window_type: e.target.value })}>
+                      <option value="boxcar">boxcar</option>
+                      <option value="triang">triang</option>
+                      <option value="blackman">blackman</option>
+                      <option value="hamming">hamming</option>
+                      <option value="hann">hann</option>
+                      <option value="bartlett">bartlett</option>
+                      <option value="flattop">flattop</option>
+                      <option value="parzen">parzen</option>
+                      <option value="bohman">bohman</option>
+                      <option value="blackmanharris">blackmanharris</option>
+                      <option value="nuttall">nuttall</option>
+                      <option value="barthann">barthann</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="shape option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Shape</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*görüntü "shape" değeri kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="kwargs option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Warp_kwargs</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleWindowButtonClick}
+              >Window</Button>
+            </div>
+
+            <div className="median">
+              <div className="options mb-3">
+
+                <div className="window_type option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'ball(5)' kullanılıyor</p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*görüntü "dtype" değeri kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="mode option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mode</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="cval option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Cval</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="behaviour option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Behaviour</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleMedianButtonClick}
+              >Median</Button>
+            </div>
+
+
+
+          </Accordion>
 
           <Accordion title="Histogram Görüntüleme ve Eşitleme">
+
+            <div className="show_eq_hist">
+              <div className="options mb-3">
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleShowHistogramButtonClick}
+              >Show Histogram</Button>
+            </div>
+
             <div className="eq_hist">
               <div className="options mb-3">
 
@@ -411,6 +616,68 @@ function App() {
                 className="secondary"
                 onClick={handleSwirlButtonClick}
               >Swirl</Button>
+            </div>
+
+            <div className="crop">
+              <div className="options mb-3">
+
+                <div className="x_from option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>x_from</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="x"
+                      type="number"
+                      value={crop.x[0]}
+                      onChange={(e) => setCrop({ ...crop, x: [parseInt(e.target.value), crop.x[1]] })} />
+                  </div>
+                </div>
+
+                <div className="x_to option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>x_from</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="x"
+                      type="number"
+                      value={crop.x[1]}
+                      onChange={(e) => setCrop({ ...crop, x: [crop.x[0], parseInt(e.target.value)] })} />
+                  </div>
+                </div>
+
+                <div className="y_from option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>y_from</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="y_from"
+                      type="number"
+                      value={crop.y[0]}
+                      onChange={(e) => setCrop({ ...crop, y: [parseInt(e.target.value), crop.y[1]] })} />
+                  </div>
+                </div>
+
+                <div className="y_to option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>y_to</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="y"
+                      type="number"
+                      value={crop.y[1]}
+                      onChange={(e) => setCrop({ ...crop, y: [crop.y[0], parseInt(e.target.value)] })} />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleCropButtonClick}
+              >Crop</Button>
             </div>
 
             <div className="hough_circle">
@@ -635,9 +902,19 @@ function App() {
 
         </div>
 
+        <Loading
+          show={states.isLoading}
+        />
 
       </div>
-    </div>
+
+      <ErrorPop
+        error={states.warningMessage || ""}
+        message={`Uygulama esnasında hata meydana geldi.\n Parametrelerin doğruluğundan ve görüntünün varlığından emin olun.`}
+        show={states.showWarningMessage}
+        onClose={() => setStates({ ...states, showWarningMessage: false })}
+      />
+    </div >
   );
 }
 

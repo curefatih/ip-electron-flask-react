@@ -1,13 +1,33 @@
 {
   "name": "p1_2",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "IP project 1",
+  "main": "dist/main.js",
+  "homepage": "./",
   "scripts": {
-    "build": "tsc",
+    "build:tsc": "tsc",
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && electron dist/main.js"
+    "start": "npm run build:tsc && electron dist/main.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.fatihcure.iprocessing",
+    "productName" : "FatihCURE-iprocessing-p1",
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "directories": {
+      "output": "out"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -16,10 +36,11 @@
     "@types/electron": "^1.6.10",
     "@types/uuid": "^8.3.0",
     "electron": "^10.1.5",
-    "electron-is-dev": "^1.2.0",
+    "electron-builder": "^22.9.1",
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "electron-is-dev": "^1.2.0",
     "isomorphic-fetch": "^3.0.0",
     "python-shell": "^2.0.2",
     "uuid": "^8.3.1"
