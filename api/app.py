@@ -18,6 +18,8 @@ import image.transform.hough_circle as hc
 import image.transform.swirl as swirl
 import image.transform.down_scale as ds
 import image.transform.integral as integral
+import image.transform.resize as resize
+import image.transform.affine_transform as affine_t
 
 import image.transform.eq_hist as eh
 import image.exposure.gamma as gamma
@@ -177,6 +179,14 @@ def crop_route():
     img = crop.run(img, **opt)
     return Response(img)
 
+@app.route("/resize", methods=['GET', 'POST'])
+@cross_origin()
+def resize_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = resize.run(img, **opts['parameters'])
+    return Response(img)
 
 #  -************* NOT WORKING after this
 
@@ -214,6 +224,14 @@ def down_scale_route():
 
 #  -************* In Processs
 
+@app.route("/affine_transform", methods=['GET', 'POST'])
+@cross_origin()
+def affine_trasnform_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = affine_t.run(img, **opts['parameters'])
+    return Response(img)
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5001, debug=True)

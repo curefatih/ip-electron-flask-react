@@ -64,18 +64,6 @@ function App() {
     rotation: 0
   })
 
-  const [houghCircle, setHoughCircle] = React.useState({
-    radius: 0,
-    normalize: false,
-    full_output: false
-  })
-
-  const [downscale, setDownscale] = React.useState({
-    cval: 0,
-    clip: true,
-    factors: [1, 1, 1]
-  })
-
   const [eqHist, setEqHist] = React.useState({
     bins: 256
   })
@@ -98,6 +86,17 @@ function App() {
   const [crop, setCrop] = React.useState({
     x: [0, 0],
     y: [0, 0]
+  })
+
+  const [resize, setResize] = React.useState({
+    output_shape: [0, 0]
+  })
+
+  const [affineTransform, setAffineTransform] = React.useState({
+    scale: 0,
+    rotation: 0,
+    shear: 0,
+    translation: [0, 0]
   })
 
   const dataOrError = React.useCallback((str, type) => {
@@ -171,33 +170,18 @@ function App() {
       dataOrError(base64, "CROP")
     })
 
+    ipcRenderer.on('resize', (event: any, base64: string) => {
+      dataOrError(base64, "RESIZE")
+    })
 
     /*****************************not working */
 
-    ipcRenderer.on('integral_image', (event: any, base64: string) => {
-
-      console.log(base64);
-
-      setStates({
-        ...states,
-        currentDisplay: "INTEGRAL",
-        initialImage: base64.toString()
-      })
-    })
-
-    ipcRenderer.on('downscale', (event: any, base64: string) => {
-
-      console.log(base64);
-
-      setStates({
-        ...states,
-        isLoading: false,
-        currentDisplay: "DOWNSCALE",
-        initialImage: base64.toString()
-      })
-    })
 
     /***************************** in progress */
+
+    ipcRenderer.on('affine_transform', (event: any, base64: string) => {
+      dataOrError(base64, "AFFINE_TRANSFORM")
+    })
 
   }, [])
 
@@ -214,21 +198,6 @@ function App() {
   const handleSwirlButtonClick = () => {
     setStates({ ...states, isLoading: true })
     ipcRenderer.send('swirl', { args: swirl, image: states.initialImage })
-  }
-
-  const handleHoughCircleButtonClick = () => {
-    setStates({ ...states, isLoading: true })
-    ipcRenderer.send('hough_circle', { args: houghCircle, image: states.initialImage })
-  }
-
-  const handleIntegralButtonClick = () => {
-    setStates({ ...states, isLoading: true })
-    ipcRenderer.send('integral_image', { image: states.initialImage })
-  }
-
-  const handleDownscaleButtonClick = () => {
-    setStates({ ...states, isLoading: true })
-    ipcRenderer.send('downscale', { args: downscale, image: states.initialImage })
   }
 
   const handleEqHistButtonClick = () => {
@@ -264,6 +233,16 @@ function App() {
   const handleCropButtonClick = () => {
     setStates({ ...states, isLoading: true })
     ipcRenderer.send('crop', { args: crop, image: states.initialImage })
+  }
+
+  const handleResizeButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('resize', { args: resize, image: states.initialImage })
+  }
+
+  const handleAffineTransformButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('affine_transform', { args: affineTransform, image: states.initialImage })
   }
 
   return (
@@ -309,6 +288,11 @@ function App() {
                         ...swirl,
                         center
                       })
+
+                      setResize({
+                        ...resize,
+                        output_shape: [e.target.naturalHeight, e.target.naturalWidth]
+                      })
                     }}
                   />
                   </> : null
@@ -336,7 +320,9 @@ function App() {
               showInstruction={states.initialImage === "" && !states.showVideo}
               onDrop={(e) => {
                 //@ts-expect-error
-                window.ipcRenderer.send('openFile', e.dataTransfer.files[0].path)
+                if (e.dataTransfer.files[0] && e.dataTransfer.files[0].path)
+                  //@ts-expect-error
+                  window.ipcRenderer.send('openFile', e.dataTransfer.files[0].path)
               }} />
             : null}
 
@@ -408,7 +394,7 @@ function App() {
                     <h6>Selem</h6>
                   </div>
                   <div className="inputs column">
-                    <p>*'ball(5)' kullanılıyor</p>
+                    <p>*'ball(5)' kullanılıyor.</p>
                   </div>
                 </div>
 
@@ -680,111 +666,118 @@ function App() {
               >Crop</Button>
             </div>
 
-            <div className="hough_circle">
+            <div className="resize">
               <div className="options mb-3">
 
-                <div className="radius option columns">
+                <div className="rows option columns">
                   <div className="option_title column has-text-centered">
-                    <h6>Radius</h6>
+                    <h6>y</h6>
                   </div>
                   <div className="inputs column">
                     <Input
-                      placeholder="degree"
+                      placeholder="x"
                       type="number"
-                      value={houghCircle.radius}
-                      onChange={(e) => setHoughCircle({ ...houghCircle, radius: parseFloat(e.target.value) })} />
+                      value={resize.output_shape[0]}
+                      onChange={(e) => setResize({ ...resize, output_shape: [parseInt(e.target.value), resize.output_shape[1]] })} />
+                  </div>
+                </div>
+
+                <div className="x_to option columns">
+                  <div className="cols column has-text-centered">
+                    <h6>x</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="x"
+                      type="number"
+                      value={resize.output_shape[1]}
+                      onChange={(e) => setResize({ ...resize, output_shape: [resize.output_shape[0], parseInt(e.target.value)] })} />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleResizeButtonClick}
+              >Resize</Button>
+            </div>
+
+            <div className="affine_trasnform">
+              <div className="options mb-3">
+
+              <div className="matrix option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Matrix</h6>
+                  </div>
+                  <div className="inputs column">
+                    *varsayılan değer kullanıldı. - (3,3) homojen transformation matrix
+                  </div>
+                </div>
+
+                <div className="radius option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Rotation</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="rotation"
+                      type="number"
+                      value={affineTransform.rotation}
+                      onChange={(e) => setAffineTransform({ ...affineTransform, rotation: parseFloat(e.target.value) })} />
                   </div>
                 </div>
 
                 <div className="hough_normalize option columns">
                   <div className="option_title column has-text-centered">
-                    <h6>Normalize</h6>
+                    <h6>Scale</h6>
                   </div>
                   <div className="inputs column">
-                    <input
-                      type="checkbox"
-                      onChange={(e) => setHoughCircle({ ...houghCircle, normalize: e.target.checked })} />
+                    <Input
+                      placeholder="scale"
+                      type="number"
+                      value={affineTransform.scale}
+                      onChange={(e) => setAffineTransform({ ...affineTransform, scale: parseFloat(e.target.value) })} />
                   </div>
                 </div>
 
                 <div className="full_output option columns">
                   <div className="option_title column has-text-centered">
-                    <h6>Full output</h6>
-                  </div>
-                  <div className="inputs column">
-                    <input
-                      type="checkbox"
-                      onChange={(e) => setHoughCircle({ ...houghCircle, full_output: e.target.checked })} />
-                  </div>
-                </div>
-
-              </div>
-              <Button
-                className="secondary"
-                onClick={handleHoughCircleButtonClick}
-              >Hough Circle</Button>
-            </div>
-
-            <div className="integral">
-              <Button
-                className="secondary"
-                onClick={handleIntegralButtonClick}
-              >Integral Image</Button>
-            </div>
-
-            <div className="downscale">
-              <div className="options mb-3">
-                <div className="factors option columns">
-                  <div className="option_title column has-text-centered">
-                    <h6>Factors</h6>
-                  </div>
-                  <div className="inputs column">
-                    x<Input
-                      placeholder="x"
-                      type="number"
-                      value={downscale.factors[0]}
-                      onChange={(e) => setDownscale({ ...downscale, factors: [parseInt(e.target.value), downscale.factors[1]] })} />
-                    y<Input
-                      placeholder="y"
-                      type="number"
-                      value={downscale.factors[1]}
-                      id="rotate_center_y"
-                      onChange={(e) => {
-                        setDownscale({ ...downscale, factors: [downscale.factors[0], parseInt(e.target.value)] })
-                      }} />
-                  </div>
-                </div>
-                <div className="cval option columns">
-                  <div className="option_title column has-text-centered">
-                    <h6>Cval</h6>
+                    <h6>Shear</h6>
                   </div>
                   <div className="inputs column">
                     <Input
-                      placeholder="degree"
+                      placeholder="shear"
                       type="number"
-                      min="1"
-                      max="180"
-                      value={downscale.cval}
-                      onChange={(e) => setDownscale({ ...downscale, cval: parseInt(e.target.value) })} />
+                      value={affineTransform.shear}
+                      onChange={(e) => setAffineTransform({ ...affineTransform, shear: parseFloat(e.target.value) })} />
                   </div>
                 </div>
 
-                <div className="clip option columns">
+                <div className="full_output option columns">
                   <div className="option_title column has-text-centered">
-                    <h6>Clip</h6>
+                    <h6>Translation</h6>
                   </div>
                   <div className="inputs column">
-                    <input
-                      type="checkbox"
-                      onChange={(e) => setDownscale({ ...downscale, clip: e.target.checked })} />
+                    x
+                    <Input
+                      placeholder="translation_x"
+                      type="number"
+                      value={affineTransform.translation[0]}
+                      onChange={(e) => setAffineTransform({ ...affineTransform, translation: [parseFloat(e.target.value), affineTransform.translation[1]] })} />
+                    y
+                    <Input
+                      placeholder="translation_y"
+                      type="number"
+                      value={affineTransform.translation[1]}
+                      onChange={(e) => setAffineTransform({ ...affineTransform, translation: [affineTransform.translation[0], parseFloat(e.target.value)] })} />
                   </div>
                 </div>
 
               </div>
               <Button
                 className="secondary"
-                onClick={handleDownscaleButtonClick}
-              >Downscale</Button>
+                onClick={handleAffineTransformButtonClick}
+              >Affine Transform</Button>
             </div>
 
           </Accordion>

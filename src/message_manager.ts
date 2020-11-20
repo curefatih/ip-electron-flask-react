@@ -212,4 +212,36 @@ export function MessageManager() {
       })
 
   })
+
+  ipcMain.on('resize', async (event, res) => {
+
+    await serverReq('/resize', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("resize", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
+  ipcMain.on('affine_transform', async (event, res) => {
+
+    await serverReq('/affine_transform', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("affine_transform", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
 }
