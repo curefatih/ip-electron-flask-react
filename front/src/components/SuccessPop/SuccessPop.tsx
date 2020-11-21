@@ -30,7 +30,7 @@ const SuccessPop: React.SFC<SuccessPopProps> = (props: SuccessPopProps) => {
         </div>
         <a onClick={() => setShowDetail(!showDetail)} >mesajı {showDetail ? "gizle":  "göster"}</a>
         {showDetail ?
-          <div style={{
+          <div className="detail" style={{
             height: "300px",
             overflow: "auto",
           }}

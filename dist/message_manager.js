@@ -483,6 +483,196 @@ function MessageManager() {
             }
         });
     }); });
+    electron_1.ipcMain.on('erosion', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/erosion', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("erosion", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('dilation', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/dilation', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("dilation", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('opening', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/opening', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("opening", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('skeletonize', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/skeletonize', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("skeletonize", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('convex_hull', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/convex_hull', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("convex_hull", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('closing', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/closing', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("closing", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('white_tophat', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/white_tophat', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("white_tophat", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('black_tophat', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/black_tophat', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("black_tophat", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('thin', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/thin', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("thin", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('medial_axis', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/medial_axis', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("medial_axis", res);
+                    })["catch"](function (err) {
+                        console.log(err);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 }
 exports.MessageManager = MessageManager;
 //# sourceMappingURL=message_manager.js.map

@@ -34,10 +34,25 @@ import image.filters.scharr as scharr
 import image.filters.hysteresis_threshold as hysteresis_threshold
 
 
+import image.morphology.erosion as erosion
+import image.morphology.dilation as dilation
+import image.morphology.opening as opening
+import image.morphology.closing as closing
+import image.morphology.skeletonize as skeletonize
+import image.morphology.convex_hull as convex_hull
+import image.morphology.white_tophat as white_tophat
+import image.morphology.black_tophat as black_tophat
+import image.morphology.thin as thin
+import image.morphology.medial_axis as medial_axis
+
+
 import image.exposure.gamma as gamma
-import image.histogram.show_histogram as sh
-from image.util import to_base64
 from skimage.exposure import equalize_adapthist
+
+import image.histogram.show_histogram as sh
+
+from image.util import to_base64
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
@@ -85,6 +100,7 @@ def handle_exception(e):
         return e
 
     # now you're handling non-HTTP exceptions only
+    print(e)
     return {'err_type': type(e).__name__, 'err_message': str(e)}, 400
 
 
@@ -259,6 +275,7 @@ def unsharp_mask_route():
     img = unsharp_mask.run(img, **opts['parameters'])
     return Response(img)
 
+
 @app.route("/meijering", methods=['GET', 'POST'])
 @cross_origin()
 def meijering_route():
@@ -267,6 +284,7 @@ def meijering_route():
     img = imread(imgdata, plugin='imageio')
     img = meijering.run(img, **opts['parameters'])
     return Response(img)
+
 
 @app.route("/scharr", methods=['GET', 'POST'])
 @cross_origin()
@@ -277,9 +295,6 @@ def scharr_route():
     img = scharr.run(img, **opts['parameters'])
     return Response(img)
 
-#  -************* NOT WORKING after this
-
-#  -************* In Processs
 
 @app.route("/hysteresis_threshold", methods=['GET', 'POST'])
 @cross_origin()
@@ -288,6 +303,110 @@ def hysteresis_threshold_route():
     imgdata = base64.b64decode(opts['img'])
     img = imread(imgdata, plugin='imageio')
     img = hysteresis_threshold.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/erosion", methods=['GET', 'POST'])
+@cross_origin()
+def erosion_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = erosion.run(img)
+    return Response(img)
+
+
+@app.route("/dilation", methods=['GET', 'POST'])
+@cross_origin()
+def dilation_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = dilation.run(img)
+    return Response(img)
+
+
+@app.route("/opening", methods=['GET', 'POST'])
+@cross_origin()
+def opening_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = opening.run(img)
+    return Response(img)
+
+
+@app.route("/skeletonize", methods=['GET', 'POST'])
+@cross_origin()
+def skeletonize_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = skeletonize.run(img)
+    return Response(img)
+
+
+@app.route("/convex_hull", methods=['GET', 'POST'])
+@cross_origin()
+def convex_hull_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = convex_hull.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/closing", methods=['GET', 'POST'])
+@cross_origin()
+def closing_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = closing.run(img)
+    return Response(img)
+
+
+@app.route("/white_tophat", methods=['GET', 'POST'])
+@cross_origin()
+def white_tophat_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = white_tophat.run(img)
+    return Response(img)
+
+
+@app.route("/thin", methods=['GET', 'POST'])
+@cross_origin()
+def thin_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = thin.run(img, **opts['parameters'])
+    return Response(img)
+
+
+@app.route("/black_tophat", methods=['GET', 'POST'])
+@cross_origin()
+def black_tophat_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = black_tophat.run(img)
+    return Response(img)
+
+#  -************* NOT WORKING after this
+
+#  -************* In Processs
+
+
+@app.route("/medial_axis", methods=['GET', 'POST'])
+@cross_origin()
+def medial_axis_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = medial_axis.run(img)
     return Response(img)
 
 

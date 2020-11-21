@@ -28,12 +28,14 @@ const ErrorPop: React.SFC<ErrorPopProps> = (props: ErrorPopProps) => {
         <div className="message-body">
           <p>{props.message}</p>
         </div>
-        <a onClick={() => setShowDetail(!showDetail)} >hatayı {showDetail ? "gizle":  "göster"}</a>
+        <a onClick={() => setShowDetail(!showDetail)} >hatayı {showDetail ? "gizle" : "göster"}</a>
         {showDetail ?
-          <div style={{
-            height: "300px",
-            overflow: "auto",
-          }}
+          <div
+            className="detail"
+            style={{
+              height: "300px",
+              overflow: "auto",
+            }}
             ref={body}>
             {props.error}
           </div> : null

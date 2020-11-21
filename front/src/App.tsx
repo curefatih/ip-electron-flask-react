@@ -17,6 +17,7 @@ declare global {
 
 const ipcRenderer = window.ipcRenderer || {}
 const videoURL = 'http://127.0.0.1:5001/video_feed';
+
 function isBase64(str: string) {
   if (str === '' || str.trim() === '') { return false; }
   try {
@@ -25,8 +26,10 @@ function isBase64(str: string) {
     return false;
   }
 }
+
 function App() {
   const contentRef = React.useRef(null);
+  const stateRef = React.useRef();
 
   const [states, setStates] = React.useState({
     showVideo: false,
@@ -148,33 +151,61 @@ function App() {
     high: 0
   })
 
+  const [convexHull, setConvexHull] = React.useState({
+    offset_coordinates: false,
+    tolerance: 0
+  })
+
+  const [thin, setThin] = React.useState({
+    max_iter: 0
+  })
+
+
+  React.useEffect(() => {
+    (stateRef as any).current = states; // Write it to the ref
+  });
+
   const dataOrError = React.useCallback((str, type) => {
+    const currentState: any = stateRef.current;
     const data: string = str.toString()
     if (isBase64(data)) {
       setStates({
-        ...states,
+        ...currentState,
         isLoading: false,
         currentDisplay: type,
         initialImage: data
       })
     } else {
       setStates({
-        ...states,
+        ...currentState,
         isLoading: false,
         warningMessage: str,
         showWarningMessage: true
       })
     }
-  }, [])
+  }, [stateRef])
 
   const saveFileHandler = React.useCallback((message: string) => {
+    const currentState: any = stateRef.current; // Read it from the ref
     setStates({
-      ...states,
+      ...currentState,
       isLoading: false,
       showSuccessMessage: true,
       succesMessage: message
     })
-  }, [states])
+  }, [stateRef])
+
+  const errorHandler = React.useCallback((message: string) => {
+    console.log("error here");
+
+    const currentState: any = stateRef.current; // Read it from the ref
+    setStates({
+      ...currentState,
+      isLoading: false,
+      showWarningMessage: true,
+      warningMessage: message
+    })
+  }, [stateRef])
 
   React.useEffect(() => {
 
@@ -190,12 +221,7 @@ function App() {
     })
 
     ipcRenderer.on('error', (event: any, message: string) => {
-      setStates({
-        ...states,
-        isLoading: false,
-        showWarningMessage: true,
-        warningMessage: message
-      })
+      errorHandler(message)
     })
 
     ipcRenderer.on('rotate', (event: any, base64: string) => {
@@ -280,17 +306,56 @@ function App() {
       dataOrError(base64, "HYSTERESIS_THRESHOLD")
     })
 
+    ipcRenderer.on('erosion', (event: any, base64: string) => {
+      dataOrError(base64, "EROSION")
+    })
+
+    ipcRenderer.on('dilation', (event: any, base64: string) => {
+      dataOrError(base64, "DILATION")
+    })
+
+    ipcRenderer.on('opening', (event: any, base64: string) => {
+      dataOrError(base64, "OPENING")
+    })
+
+    ipcRenderer.on('skeletonize', (event: any, base64: string) => {
+      dataOrError(base64, "SKELETONIZE")
+    })
+
+    ipcRenderer.on('convex_hull', (event: any, base64: string) => {
+      dataOrError(base64, "CONVEX_HULL")
+    })
+
+    ipcRenderer.on('closing', (event: any, base64: string) => {
+      dataOrError(base64, "CLOSING")
+    })
+
+    ipcRenderer.on('white_tophat', (event: any, base64: string) => {
+      dataOrError(base64, "WHITE_TOPHAT")
+    })
+
+    ipcRenderer.on('thin', (event: any, base64: string) => {
+      dataOrError(base64, "THIN")
+    })
+
+    ipcRenderer.on('black_tophat', (event: any, base64: string) => {
+      dataOrError(base64, "BLACK_TOPHAT")
+    })
     /*****************************not working */
 
 
     /***************************** in progress */
+    
+    ipcRenderer.on('medial_axis', (event: any, base64: string) => {
+      dataOrError(base64, "MEDIAL_AXIS")
+    })
 
   }, [])
 
-  React.useEffect(() => {
-    console.log(states);
+  // React.useEffect(() => {
+  //   console.log(states);
 
-  }, [states])
+  // }, [states])
 
   const handleRotate = () => {
     setStates({ ...states, isLoading: true })
@@ -385,6 +450,56 @@ function App() {
   const handleHysteresisThresholdButtonClick = () => {
     setStates({ ...states, isLoading: true })
     ipcRenderer.send('hysteresis_threshold', { args: hysteresis, image: states.initialImage })
+  }
+
+  const handleErosionButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('erosion', { args: {}, image: states.initialImage })
+  }
+
+  const handleDilationButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('dilation', { args: {}, image: states.initialImage })
+  }
+
+  const handleOpeningButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('opening', { args: {}, image: states.initialImage })
+  }
+
+  const handleSkeletonizeButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('skeletonize', { args: {}, image: states.initialImage })
+  }
+
+  const handleConvexHullButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('convex_hull', { args: convexHull, image: states.initialImage })
+  }
+
+  const handleClosingButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('closing', { args: {}, image: states.initialImage })
+  }
+
+  const handleWhiteTophatButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('white_tophat', { args: {}, image: states.initialImage })
+  }
+
+  const handleThinButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('thin', { args: thin, image: states.initialImage })
+  }
+
+  const handleBlackTophatButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('black_tophat', { args: thin, image: states.initialImage })
+  }
+
+  const handleMedialAxisButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('medial_axis', { args: {}, image: states.initialImage })
   }
 
   return (
@@ -1054,6 +1169,301 @@ function App() {
 
           <Accordion title="Morfolojik işlemler">
 
+            <div className="erosion">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(6) değeri kullanılıyor. - yarıçapı 6 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+                <div className="shift_x shift_y option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Shift_x, Shift_y</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor. - disk(6) merkezde olacak şekilde ele alınacak.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleErosionButtonClick}
+              >Erosion</Button>
+            </div>
+
+            <div className="dilation">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(6) değeri kullanılıyor. - yarıçapı 6 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+                <div className="shift_x shift_y option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Shift_x, Shift_y</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değerler kullanılıyor. - disk(6) merkezde olacak şekilde ele alınacak.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleDilationButtonClick}
+              >Dilation</Button>
+            </div>
+
+            <div className="opening">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(6) değeri kullanılıyor. - yarıçapı 6 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleOpeningButtonClick}
+              >Opening</Button>
+            </div>
+
+            <div className="closing">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(6) değeri kullanılıyor. - yarıçapı 6 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleClosingButtonClick}
+              >Closing</Button>
+            </div>
+
+            <div className="skeletonize">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Method</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değer kullanılıyor. - lee</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleSkeletonizeButtonClick}
+              >Skeletonize</Button>
+            </div>
+
+            <div className="convex_hull">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Offset_coordinates</h6>
+                  </div>
+                  <div className="inputs column">
+                    <input
+                      checked={convexHull.offset_coordinates}
+                      onChange={(e) => { setConvexHull({ ...convexHull, offset_coordinates: e.target.checked }) }}
+                      type="checkbox"
+                    />
+                  </div>
+                </div>
+
+                <div className="axis option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Tolerance</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="tolerance"
+                      type="number"
+                      value={convexHull.tolerance}
+                      onChange={(e) => setConvexHull({ ...convexHull, tolerance: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                className="secondary"
+                onClick={handleConvexHullButtonClick}
+              >Convex Hull</Button>
+            </div>
+
+            <div className="white_tophat">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(1) değeri kullanılıyor. - yarıçapı 1 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleWhiteTophatButtonClick}
+              >White Tophat</Button>
+            </div>
+
+            <div className="black_tophat">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Selem</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*disk(1) değeri kullanılıyor. - yarıçapı 1 birim olan yuvarlak </p>
+                  </div>
+                </div>
+
+                <div className="out option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'None' değeri kullanılıyor. - yeni bir dizi olarak ele alınacak</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleBlackTophatButtonClick}
+              >Black Tophat</Button>
+            </div>
+
+            <div className="thin">
+              <div className="options mb-3">
+
+                <div className="selem option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Max_iter</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="max_iter"
+                      type="number"
+                      value={thin.max_iter}
+                      onChange={(e) => setThin({ ...thin, max_iter: parseInt(e.target.value) })}
+                    />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleThinButtonClick}
+              >Thin</Button>
+            </div>
+
+            <div className="medial_axis">
+              <div className="options mb-3">
+
+                <div className="mask option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Mask</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*varsayılan değer kullanılıyor.</p>
+                  </div>
+                </div>
+
+                <div className="return_distance option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Return_distance</h6>
+                  </div>
+                  <div className="inputs column">
+                    <p>*'False' kullanılıyor.</p>
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleMedialAxisButtonClick}
+              >Medial Axis</Button>
+            </div>
+            
+
           </Accordion>
 
           <Accordion title="Histogram Görüntüleme ve Eşitleme">
@@ -1393,7 +1803,6 @@ function App() {
 
           </Accordion>
 
-
           <Accordion title="Yoğunluk Dönüşüm İşlemleri">
 
 
@@ -1513,14 +1922,16 @@ function App() {
         error={states.warningMessage || ""}
         message={`Uygulama esnasında hata meydana geldi.\n Parametrelerin doğruluğundan ve görüntünün varlığından emin olun.`}
         show={states.showWarningMessage}
-        onClose={() => setStates({ ...states, showWarningMessage: false })}
+        onClose={() => {
+          setStates({ ...states, showWarningMessage: false, warningMessage: "" })
+        }}
       />
 
       <SuccessPop
         success={states.succesMessage || ""}
         message={`İşlem başarılı`}
         show={states.showSuccessMessage}
-        onClose={() => setStates({ ...states, showSuccessMessage: false })}
+        onClose={() => setStates({ ...states, showSuccessMessage: false, succesMessage: "" })}
       />
     </div >
   );

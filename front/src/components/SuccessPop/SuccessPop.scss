@@ -15,5 +15,9 @@
 
   .message{
     min-width: 300px;
+    
+    .detail{
+      padding: 20px;
+    }
   }
 }

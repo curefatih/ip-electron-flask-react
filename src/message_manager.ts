@@ -383,5 +383,165 @@ export function MessageManager() {
       })
 
   })
+
+  ipcMain.on('erosion', async (event, res) => {
+
+    await serverReq('/erosion', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("erosion", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('dilation', async (event, res) => {
+
+    await serverReq('/dilation', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("dilation", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('opening', async (event, res) => {
+
+    await serverReq('/opening', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("opening", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('skeletonize', async (event, res) => {
+
+    await serverReq('/skeletonize', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("skeletonize", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('convex_hull', async (event, res) => {
+
+    await serverReq('/convex_hull', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("convex_hull", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
+  ipcMain.on('closing', async (event, res) => {
+
+    await serverReq('/closing', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("closing", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
+  ipcMain.on('white_tophat', async (event, res) => {
+
+    await serverReq('/white_tophat', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("white_tophat", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('black_tophat', async (event, res) => {
+
+    await serverReq('/black_tophat', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("black_tophat", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+
+  ipcMain.on('thin', async (event, res) => {
+
+    await serverReq('/thin', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("thin", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
+  
+  ipcMain.on('medial_axis', async (event, res) => {
+
+    await serverReq('/medial_axis', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("medial_axis", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  })
   
 }
