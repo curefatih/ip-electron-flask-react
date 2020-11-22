@@ -9,51 +9,52 @@ const path = require('path')
  * py process
  *************************************************************/
 
-// const PY_DIST_FOLDER = 'processor'
-// const PY_FOLDER = 'pycalc'
-// const PY_MODULE = 'api' // without .py suffix
+const PY_DIST_FOLDER = 'api'
+const PY_FOLDER = '../api'
+const PY_MODULE = 'app' // without .py suffix
 
-// let pyProc: cp.ChildProcess = null
-// let pyPort = config.PORT
+let pyProc: cp.ChildProcess = null
+let pyPort = config.PORT
 
-// const guessPackaged = () => {
-//   const fullPath = path.join(__dirname, PY_DIST_FOLDER)
-//   return require('fs').existsSync(fullPath)
-// }
+const guessPackaged = () => {
+  const fullPath = path.join(__dirname, PY_DIST_FOLDER)
+  return require('fs').existsSync(fullPath)
+}
 
-// const getScriptPath = () => {
-//   if (!guessPackaged()) {
-//     return path.join(__dirname, PY_FOLDER, PY_MODULE + '.py')
-//   }
-//   if (process.platform === 'win32') {
-//     return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
-//   }
-//   return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
-// }
+const getScriptPath = () => {
+  if (!guessPackaged()) {
+    return path.join(__dirname, PY_FOLDER, PY_MODULE + '.py')
+  }
+  if (process.platform === 'win32') {
+    return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
+  }
+  return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
+}
 
-// const createPyProc = () => {
-//   let script = getScriptPath()
-//   let port = '' + pyPort
+const createPyProc = () => {
+  let script = getScriptPath()
+  let port = '' + pyPort
 
-//   if (guessPackaged()) {
-//     pyProc = cp.execFile(script, [port])
-//   } else {
-//     pyProc = cp.spawn('python', [script, port])
-//   }
+  if (guessPackaged()) {
+    pyProc = cp.execFile(script)
+  } else {
+    pyProc = cp.spawn('python', [script])
+  }
 
-//   if (pyProc != null) {
-//     console.log('child process success on port ' + port)
-//   }
-// }
+  if (pyProc != null) {
+    console.log('child process success on port ' + port)
+  }
 
-// const exitPyProc = () => {
-//   pyProc.kill()
-//   pyProc = null
-//   pyPort = null
-// }
+}
 
-// app.on('ready', createPyProc)
-// app.on('will-quit', exitPyProc)
+const exitPyProc = () => {
+  pyProc.kill()
+  pyProc = null
+  pyPort = null
+}
+
+app.on('ready', createPyProc)
+app.on('will-quit', exitPyProc)
 
 
 /*************************************************************
@@ -72,9 +73,10 @@ function createWindow() {
   win.loadURL(
     isDev
       ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../front/index.html")}`
+      : `file://${path.join(__dirname, "../front/build/index.html")}`
   );
-  win.webContents.openDevTools()
+  if (isDev)
+    win.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)

@@ -160,6 +160,11 @@ function App() {
     max_iter: 0
   })
 
+  const [activeContour, setActiveContour] = React.useState({
+    row: 100,
+    column: 200,
+    radius: 200,
+  })
 
   React.useEffect(() => {
     (stateRef as any).current = states; // Write it to the ref
@@ -173,7 +178,7 @@ function App() {
         ...currentState,
         isLoading: false,
         currentDisplay: type,
-        initialImage: data
+        processedImgSrc: data
       })
     } else {
       setStates({
@@ -196,8 +201,6 @@ function App() {
   }, [stateRef])
 
   const errorHandler = React.useCallback((message: string) => {
-    console.log("error here");
-
     const currentState: any = stateRef.current; // Read it from the ref
     setStates({
       ...currentState,
@@ -212,7 +215,8 @@ function App() {
     ipcRenderer.on('openFile', (event: any, base64: string) => {
       setStates({
         ...states,
-        initialImage: base64.toString()
+        initialImage: base64.toString(),
+        processedImgSrc: ""
       })
     })
 
@@ -341,13 +345,17 @@ function App() {
     ipcRenderer.on('black_tophat', (event: any, base64: string) => {
       dataOrError(base64, "BLACK_TOPHAT")
     })
+
+    ipcRenderer.on('medial_axis', (event: any, base64: string) => {
+      dataOrError(base64, "MEDIAL_AXIS")
+    })
     /*****************************not working */
 
 
     /***************************** in progress */
-    
-    ipcRenderer.on('medial_axis', (event: any, base64: string) => {
-      dataOrError(base64, "MEDIAL_AXIS")
+
+    ipcRenderer.on('active_contour', (event: any, base64: string) => {
+      dataOrError(base64, "ACTIVE_CONTOUR")
     })
 
   }, [])
@@ -359,147 +367,152 @@ function App() {
 
   const handleRotate = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('rotate', { args: transform, image: states.initialImage })
+    ipcRenderer.send('rotate', { args: transform, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleSwirlButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('swirl', { args: swirl, image: states.initialImage })
+    ipcRenderer.send('swirl', { args: swirl, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleEqHistButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('eq_hist', { args: eqHist, image: states.initialImage })
+    ipcRenderer.send('eq_hist', { args: eqHist, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleGammaButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('gamma', { args: gamma, image: states.initialImage })
+    ipcRenderer.send('gamma', { args: gamma, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleEqAdaptHistButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('equalize_adapthist', { args: equalizeAdaptHist, image: states.initialImage })
+    ipcRenderer.send('equalize_adapthist', { args: equalizeAdaptHist, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleShowHistogramButtonClick = () => {
     // setStates({ ...states, isLoading: true })
-    ipcRenderer.send('show_histogram', { image: states.initialImage })
+    ipcRenderer.send('show_histogram', { image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleWindowButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('window', { args: windowFilter, image: states.initialImage })
+    ipcRenderer.send('window', { args: windowFilter, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleMedianButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('median', { args: {}, image: states.initialImage })
+    ipcRenderer.send('median', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleCropButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('crop', { args: crop, image: states.initialImage })
+    ipcRenderer.send('crop', { args: crop, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleResizeButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('resize', { args: resize, image: states.initialImage })
+    ipcRenderer.send('resize', { args: resize, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleAffineTransformButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('affine_transform', { args: affineTransform, image: states.initialImage })
+    ipcRenderer.send('affine_transform', { args: affineTransform, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleSatoButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('sato', { args: sato, image: states.initialImage })
+    ipcRenderer.send('sato', { args: sato, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleSobelButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('sobel', { args: sobel, image: states.initialImage })
+    ipcRenderer.send('sobel', { args: sobel, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handlePrewittButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('prewitt', { args: prewitt, image: states.initialImage })
+    ipcRenderer.send('prewitt', { args: prewitt, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleLaplaceButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('laplace', { args: laplace, image: states.initialImage })
+    ipcRenderer.send('laplace', { args: laplace, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleUnsharpMaskButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('unsharp_mask', { args: unsharp, image: states.initialImage })
+    ipcRenderer.send('unsharp_mask', { args: unsharp, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleMeijeringButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('meijering', { args: meijering, image: states.initialImage })
+    ipcRenderer.send('meijering', { args: meijering, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleScharrButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('scharr', { args: scharr, image: states.initialImage })
+    ipcRenderer.send('scharr', { args: scharr, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleHysteresisThresholdButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('hysteresis_threshold', { args: hysteresis, image: states.initialImage })
+    ipcRenderer.send('hysteresis_threshold', { args: hysteresis, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleErosionButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('erosion', { args: {}, image: states.initialImage })
+    ipcRenderer.send('erosion', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleDilationButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('dilation', { args: {}, image: states.initialImage })
+    ipcRenderer.send('dilation', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleOpeningButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('opening', { args: {}, image: states.initialImage })
+    ipcRenderer.send('opening', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleSkeletonizeButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('skeletonize', { args: {}, image: states.initialImage })
+    ipcRenderer.send('skeletonize', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleConvexHullButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('convex_hull', { args: convexHull, image: states.initialImage })
+    ipcRenderer.send('convex_hull', { args: convexHull, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleClosingButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('closing', { args: {}, image: states.initialImage })
+    ipcRenderer.send('closing', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleWhiteTophatButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('white_tophat', { args: {}, image: states.initialImage })
+    ipcRenderer.send('white_tophat', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleThinButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('thin', { args: thin, image: states.initialImage })
+    ipcRenderer.send('thin', { args: thin, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleBlackTophatButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('black_tophat', { args: thin, image: states.initialImage })
+    ipcRenderer.send('black_tophat', { args: thin, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   const handleMedialAxisButtonClick = () => {
     setStates({ ...states, isLoading: true })
-    ipcRenderer.send('medial_axis', { args: {}, image: states.initialImage })
+    ipcRenderer.send('medial_axis', { args: {}, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
+  }
+
+  const handleContourButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    ipcRenderer.send('active_contour', { args: activeContour, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
 
   return (
@@ -566,7 +579,7 @@ function App() {
                           height: e.target.naturalHeight
                         }
                       })
-                    }} /> : null
+                    }} /> : ""
                 }
               </>
             }
@@ -591,6 +604,18 @@ function App() {
                 }}
               >
                 Görüntüyü kaydet</Button>
+            </div> : null}
+
+          {!states.showVideo && states.initialImage !== "" && states.processedImgSrc !== "" ?
+            <div className="base-image-button">
+              <Button
+                onClick={() => {
+                  setStates({
+                    ...states,
+                    processedImgSrc: ""
+                  })
+                }}
+              >İlk görüntüye dön</Button>
             </div> : null}
 
           <ImageViewer
@@ -1462,7 +1487,7 @@ function App() {
                 onClick={handleMedialAxisButtonClick}
               >Medial Axis</Button>
             </div>
-            
+
 
           </Accordion>
 
@@ -1894,6 +1919,60 @@ function App() {
                 onClick={handleEqAdaptHistButtonClick}
               >Equalize Adapt Histogram(CLAHE)</Button>
             </div>
+
+          </Accordion>
+
+          <Accordion title="Active contour">
+
+            <div className="active_contour">
+              <div className="options mb-3">
+
+                <div className="column option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Column</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="degree"
+                      type="number"
+                      value={activeContour.column}
+                      onChange={(e) => setActiveContour({ ...activeContour, column: parseInt(e.target.value) })} />
+                  </div>
+                </div>
+
+                <div className="row option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Row</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="degree"
+                      type="number"
+                      value={activeContour.row}
+                      onChange={(e) => setActiveContour({ ...activeContour, row: parseInt(e.target.value) })} />
+                  </div>
+                </div>
+
+                <div className="radius option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Radius</h6>
+                  </div>
+                  <div className="inputs column">
+                    <Input
+                      placeholder="degree"
+                      type="number"
+                      value={activeContour.radius}
+                      onChange={(e) => setActiveContour({ ...activeContour, radius: parseInt(e.target.value) })} />
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="primary"
+                onClick={handleContourButtonClick}
+              >Uygula</Button>
+            </div>
+
 
           </Accordion>
 

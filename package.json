@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build:tsc && electron dist/main.js",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "build:front": "cd ./front && npm run build",
+    "dist": "npm run build:tsc && electron-builder"
   },
   "build": {
     "appId": "com.fatihcure.iprocessing",
@@ -26,7 +27,9 @@
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "package.json"
+      "package.json",
+      "front/build/**/*",
+      "api/**/*.py"
     ]
   },
   "keywords": [],

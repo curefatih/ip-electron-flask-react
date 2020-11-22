@@ -33,7 +33,7 @@ export function MessageManager() {
         event.reply("rotate", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -60,7 +60,7 @@ export function MessageManager() {
         event.reply("swirl", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -76,7 +76,7 @@ export function MessageManager() {
         event.reply("hough_circle", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -91,7 +91,7 @@ export function MessageManager() {
         event.reply("integral_image", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -107,7 +107,7 @@ export function MessageManager() {
         event.reply("downscale", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -123,7 +123,7 @@ export function MessageManager() {
         event.reply("eq_hist", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -139,7 +139,7 @@ export function MessageManager() {
         event.reply("gamma", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -155,7 +155,7 @@ export function MessageManager() {
         event.reply("equalize_adapthist", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -171,7 +171,7 @@ export function MessageManager() {
         event.reply("show_histogram", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -187,7 +187,7 @@ export function MessageManager() {
         event.reply("window", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -203,7 +203,7 @@ export function MessageManager() {
         event.reply("median", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -219,7 +219,7 @@ export function MessageManager() {
         event.reply("crop", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -235,7 +235,7 @@ export function MessageManager() {
         event.reply("resize", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -251,7 +251,7 @@ export function MessageManager() {
         event.reply("affine_transform", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -267,7 +267,7 @@ export function MessageManager() {
         event.reply("sato", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -283,7 +283,7 @@ export function MessageManager() {
         event.reply("sobel", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -299,7 +299,7 @@ export function MessageManager() {
         event.reply("prewitt", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -315,7 +315,7 @@ export function MessageManager() {
         event.reply("laplace", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -331,7 +331,7 @@ export function MessageManager() {
         event.reply("unsharp_mask", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -347,7 +347,7 @@ export function MessageManager() {
         event.reply("meijering", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -363,7 +363,7 @@ export function MessageManager() {
         event.reply("scharr", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -379,7 +379,7 @@ export function MessageManager() {
         event.reply("hysteresis_threshold", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -395,7 +395,7 @@ export function MessageManager() {
         event.reply("erosion", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -411,7 +411,7 @@ export function MessageManager() {
         event.reply("dilation", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -427,7 +427,7 @@ export function MessageManager() {
         event.reply("opening", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -443,7 +443,7 @@ export function MessageManager() {
         event.reply("skeletonize", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -459,7 +459,7 @@ export function MessageManager() {
         event.reply("convex_hull", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -475,7 +475,7 @@ export function MessageManager() {
         event.reply("closing", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -491,7 +491,7 @@ export function MessageManager() {
         event.reply("white_tophat", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -507,7 +507,7 @@ export function MessageManager() {
         event.reply("black_tophat", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -523,7 +523,7 @@ export function MessageManager() {
         event.reply("thin", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
@@ -539,9 +539,24 @@ export function MessageManager() {
         event.reply("medial_axis", res);
       })
       .catch(err => {
-        console.log(err);
+        event.reply("err", err.message);
       })
 
   })
-  
+
+  ipcMain.on('active_contour', async (event, res) => {
+
+    await serverReq('/active_contour', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("active_contour", res);
+      })
+      .catch(err => {
+        event.reply("err", err.message);
+      })
+
+  })
 }

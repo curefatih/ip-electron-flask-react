@@ -69,7 +69,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("rotate", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -96,7 +96,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("swirl", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -115,7 +115,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("hough_circle", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -133,7 +133,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("integral_image", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -152,7 +152,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("downscale", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -171,7 +171,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("eq_hist", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -190,7 +190,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("gamma", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -209,7 +209,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("equalize_adapthist", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -228,7 +228,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("show_histogram", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -247,7 +247,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("window", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -266,7 +266,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("median", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -285,7 +285,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("crop", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -304,7 +304,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("resize", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -323,7 +323,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("affine_transform", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -342,7 +342,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("sato", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -361,7 +361,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("sobel", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -380,7 +380,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("prewitt", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -399,7 +399,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("laplace", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -418,7 +418,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("unsharp_mask", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -437,7 +437,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("meijering", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -456,7 +456,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("scharr", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -475,7 +475,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("hysteresis_threshold", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -494,7 +494,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("erosion", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -513,7 +513,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("dilation", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -532,7 +532,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("opening", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -551,7 +551,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("skeletonize", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -570,7 +570,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("convex_hull", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -589,7 +589,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("closing", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -608,7 +608,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("white_tophat", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -627,7 +627,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("black_tophat", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -646,7 +646,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("thin", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -665,7 +665,26 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("medial_axis", res);
                     })["catch"](function (err) {
-                        console.log(err);
+                        event.reply("err", err.message);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('active_contour', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/active_contour', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("active_contour", res);
+                    })["catch"](function (err) {
+                        event.reply("err", err.message);
                     })];
                 case 1:
                     _a.sent();

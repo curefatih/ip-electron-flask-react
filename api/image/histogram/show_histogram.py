@@ -7,6 +7,10 @@ from ..util import to_img, to_base64
 
 
 def run(img):
+    if len(img.shape) > 2 and img.shape[2] == 4:
+        img = color.rgba2rgb(img)
+    if len(img.shape) == 2:
+        img = color.gray2rgb(img)
 
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(8, 4))
     for ax in axes[1, :]:
@@ -18,6 +22,8 @@ def run(img):
         axes[0, c].plot(bins, img_cdf)
         axes[0, c].set_ylabel(c_color)
 
+    if img.shape[2] == 4:
+        img = color.rgba2rgb(img)
     img_gray = color.rgb2gray(img)
     hist, hist_centers = exposure.histogram(color.rgb2gray(img), )
     img_cdf, bins = exposure.cumulative_distribution(img_gray)

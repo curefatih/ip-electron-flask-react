@@ -51,6 +51,9 @@ from skimage.exposure import equalize_adapthist
 
 import image.histogram.show_histogram as sh
 
+import image.active_contour.active_contour as active_contour
+
+
 from image.util import to_base64
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -71,7 +74,7 @@ app = Flask(__name__)
 
 
 def gen_frames():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture('0')
     while True:
         success, frame = camera.read()
         if not success:
@@ -395,11 +398,6 @@ def black_tophat_route():
     img = black_tophat.run(img)
     return Response(img)
 
-#  -************* NOT WORKING after this
-
-#  -************* In Processs
-
-
 @app.route("/medial_axis", methods=['GET', 'POST'])
 @cross_origin()
 def medial_axis_route():
@@ -407,6 +405,20 @@ def medial_axis_route():
     imgdata = base64.b64decode(opts['img'])
     img = imread(imgdata, plugin='imageio')
     img = medial_axis.run(img)
+    return Response(img)
+
+#  -************* NOT WORKING after this
+
+#  -************* In Processs
+
+    
+@app.route("/active_contour", methods=['GET', 'POST'])
+@cross_origin()
+def active_contour_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = active_contour.run(img, **opts['parameters'])
     return Response(img)
 
 
