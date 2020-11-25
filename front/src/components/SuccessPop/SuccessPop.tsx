@@ -28,12 +28,9 @@ const SuccessPop: React.SFC<SuccessPopProps> = (props: SuccessPopProps) => {
         <div className="message-body">
           <p>{props.message}</p>
         </div>
-        <a onClick={() => setShowDetail(!showDetail)} >mesajı {showDetail ? "gizle":  "göster"}</a>
+        <a onClick={() => setShowDetail(!showDetail)} >mesajı {showDetail ? "gizle" : "göster"}</a>
         {showDetail ?
-          <div className="detail" style={{
-            height: "300px",
-            overflow: "auto",
-          }}
+          <div className="detail"
             ref={body}>
             {props.success}
           </div> : null

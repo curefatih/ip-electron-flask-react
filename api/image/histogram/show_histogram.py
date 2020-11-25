@@ -18,21 +18,18 @@ def run(img):
     for c, c_color in enumerate(('red', 'green', 'blue')):
         img_hist, bins = exposure.histogram(img[..., c], source_range='dtype')
         axes[0, c].plot(bins, img_hist / img_hist.max())
-        img_cdf, bins = exposure.cumulative_distribution(img[..., c])
-        axes[0, c].plot(bins, img_cdf)
         axes[0, c].set_ylabel(c_color)
 
-    if img.shape[2] == 4:
-        img = color.rgba2rgb(img)
-    img_gray = color.rgb2gray(img)
-    hist, hist_centers = exposure.histogram(color.rgb2gray(img), )
-    img_cdf, bins = exposure.cumulative_distribution(img_gray)
     gs = axes[1, 2].get_gridspec()
+
+    img_gray = color.rgb2gray(img)
+    hist, hist_centers = exposure.histogram(img_gray, nbins=256)
+    # print(hist_centers, hist)
 
     axs_gray = fig.add_subplot(gs[1:, :])
     axs_gray.plot(hist_centers, hist / hist.max())
-    img_cdf, bins = exposure.cumulative_distribution(img_gray)
-    axs_gray.plot(bins, img_cdf)
+
+
     axs_gray.set_ylabel("gray")
 
     axes[0, 1].set_title('Histogram')

@@ -29,8 +29,9 @@
       "node_modules/**/*",
       "package.json",
       "front/build/**/*",
-      "api/**/*.py"
-    ]
+      "api/**/*"
+    ],
+    "asar": false
   },
   "keywords": [],
   "author": "",

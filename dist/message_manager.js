@@ -39,6 +39,7 @@ exports.__esModule = true;
 exports.MessageManager = exports.serverReq = void 0;
 var electron_1 = require("electron");
 var fs = require("fs");
+var path = require("path");
 require('isomorphic-fetch');
 exports.serverReq = function (path, data) {
     return fetch('http://127.0.0.1:5001' + path, {
@@ -69,7 +70,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("rotate", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -79,10 +80,30 @@ function MessageManager() {
     }); });
     electron_1.ipcMain.on('saveFile', function (event, img) {
         var base64Data = img.replace(/^data:image\/png;base64,/, "");
-        require("fs").writeFile("out.png", base64Data, 'base64', function (err) {
-            if (err)
-                event.reply('error', err.message);
-            event.reply('saveFile', 'Görüntü etkin dizine "out.png" adında kaydedildi.');
+        electron_1.dialog.showSaveDialog({
+            title: 'Select the File Path to save',
+            defaultPath: path.join(__dirname, '../assets/out.png'),
+            buttonLabel: 'Save',
+            filters: [
+                {
+                    name: 'Text Files',
+                    extensions: ['png', 'jpeg']
+                },
+            ],
+            properties: []
+        }).then(function (file) {
+            if (!file.canceled) {
+                fs.writeFile(file.filePath.toString(), base64Data, 'base64', function (err) {
+                    if (err)
+                        event.reply('error', err.message);
+                    event.reply('saveFile', "G\u00F6r\u00FCnt\u00FC " + file.filePath.toString() + " dizinine kaydedildi.");
+                });
+            }
+            else {
+                event.reply('error', "G\u00F6r\u00FCnt\u00FC kaydetme iptal edildi.");
+            }
+        })["catch"](function (err) {
+            console.log(err);
         });
     });
     electron_1.ipcMain.on('swirl', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -96,7 +117,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("swirl", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -115,7 +136,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("hough_circle", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -133,7 +154,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("integral_image", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -152,7 +173,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("downscale", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -171,7 +192,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("eq_hist", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -190,7 +211,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("gamma", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -209,7 +230,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("equalize_adapthist", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -228,7 +249,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("show_histogram", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -247,7 +268,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("window", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -266,7 +287,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("median", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -285,7 +306,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("crop", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -304,7 +325,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("resize", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -323,7 +344,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("affine_transform", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -342,7 +363,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("sato", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -361,7 +382,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("sobel", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -380,7 +401,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("prewitt", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -399,7 +420,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("laplace", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -418,7 +439,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("unsharp_mask", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -437,7 +458,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("meijering", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -456,7 +477,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("scharr", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -475,7 +496,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("hysteresis_threshold", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -494,7 +515,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("erosion", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -513,7 +534,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("dilation", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -532,7 +553,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("opening", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -551,7 +572,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("skeletonize", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -570,7 +591,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("convex_hull", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -589,7 +610,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("closing", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -608,7 +629,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("white_tophat", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -627,7 +648,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("black_tophat", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -646,7 +667,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("thin", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -665,7 +686,7 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("medial_axis", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();
@@ -684,7 +705,26 @@ function MessageManager() {
                         .then(function (res) {
                         event.reply("active_contour", res);
                     })["catch"](function (err) {
-                        event.reply("err", err.message);
+                        event.reply("error", err.message);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.ipcMain.on('social_media_effect', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/social_media_effect', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("social_media_effect", res);
+                    })["catch"](function (err) {
+                        event.reply("error", err.message);
                     })];
                 case 1:
                     _a.sent();

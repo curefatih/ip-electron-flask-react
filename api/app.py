@@ -52,7 +52,7 @@ from skimage.exposure import equalize_adapthist
 import image.histogram.show_histogram as sh
 
 import image.active_contour.active_contour as active_contour
-
+import image.social_media_effect as social_media_effect
 
 from image.util import to_base64
 
@@ -74,7 +74,7 @@ app = Flask(__name__)
 
 
 def gen_frames():
-    camera = cv2.VideoCapture('0')
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()
         if not success:
@@ -112,6 +112,17 @@ def handle_exception(e):
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
 
 @app.route("/rotate", methods=['GET', 'POST'])
 @cross_origin()
@@ -406,11 +417,6 @@ def medial_axis_route():
     img = imread(imgdata, plugin='imageio')
     img = medial_axis.run(img)
     return Response(img)
-
-#  -************* NOT WORKING after this
-
-#  -************* In Processs
-
     
 @app.route("/active_contour", methods=['GET', 'POST'])
 @cross_origin()
@@ -419,6 +425,20 @@ def active_contour_route():
     imgdata = base64.b64decode(opts['img'])
     img = imread(imgdata, plugin='imageio')
     img = active_contour.run(img, **opts['parameters'])
+    return Response(img)
+
+
+#  -************* NOT WORKING after this
+
+#  -************* In Processs
+
+@app.route("/social_media_effect", methods=['GET', 'POST'])
+@cross_origin()
+def social_media_effect_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = social_media_effect.run(img)
     return Response(img)
 
 

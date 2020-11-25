@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as cp from 'child_process';
 import config from './config';
-import { MessageManager } from './message_manager';
+import { MessageManager, serverReq } from './message_manager';
 import * as isDev from 'electron-is-dev'
 const path = require('path')
 
@@ -9,53 +9,45 @@ const path = require('path')
  * py process
  *************************************************************/
 
-const PY_DIST_FOLDER = 'api'
-const PY_FOLDER = '../api'
-const PY_MODULE = 'app' // without .py suffix
+if (!isDev) {
+  let pyProc: cp.ChildProcess = null
+  let pyPort = config.PORT
 
-let pyProc: cp.ChildProcess = null
-let pyPort = config.PORT
+  const createPyProc = () => {
+    let script = path.join(__dirname, "../api/app.py")
+    let port = '' + pyPort
 
-const guessPackaged = () => {
-  const fullPath = path.join(__dirname, PY_DIST_FOLDER)
-  return require('fs').existsSync(fullPath)
-}
-
-const getScriptPath = () => {
-  if (!guessPackaged()) {
-    return path.join(__dirname, PY_FOLDER, PY_MODULE + '.py')
-  }
-  if (process.platform === 'win32') {
-    return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
-  }
-  return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
-}
-
-const createPyProc = () => {
-  let script = getScriptPath()
-  let port = '' + pyPort
-
-  if (guessPackaged()) {
-    pyProc = cp.execFile(script)
-  } else {
     pyProc = cp.spawn('python', [script])
+
+    if (pyProc != null) {
+      console.log('child process success on port ' + port)
+    }
+
   }
 
-  if (pyProc != null) {
-    console.log('child process success on port ' + port)
+  const exitPyProc = () => {
+    // @ts-expect-error
+    pyProc.stdin.pause();
+    pyProc.kill()
+    pyProc = null
+    pyPort = null
   }
 
+  app.on('ready', createPyProc)
+  app.on('before-quit', async function () {
+    console.log("quiting");
+
+    await serverReq('/shutdown', {})
+      .then(res => res.text())
+      .then(res => {
+        console.log("q", res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    exitPyProc()
+  });
 }
-
-const exitPyProc = () => {
-  pyProc.kill()
-  pyProc = null
-  pyPort = null
-}
-
-app.on('ready', createPyProc)
-app.on('will-quit', exitPyProc)
-
 
 /*************************************************************
  * electron process

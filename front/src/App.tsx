@@ -349,13 +349,17 @@ function App() {
     ipcRenderer.on('medial_axis', (event: any, base64: string) => {
       dataOrError(base64, "MEDIAL_AXIS")
     })
+
+    ipcRenderer.on('active_contour', (event: any, base64: string) => {
+      dataOrError(base64, "ACTIVE_CONTOUR")
+    })
     /*****************************not working */
 
 
     /***************************** in progress */
 
-    ipcRenderer.on('active_contour', (event: any, base64: string) => {
-      dataOrError(base64, "ACTIVE_CONTOUR")
+    ipcRenderer.on('social_media_effect', (event: any, base64: string) => {
+      dataOrError(base64, "SOCIAL_MEDIA_EFFECT")
     })
 
   }, [])
@@ -600,7 +604,7 @@ function App() {
               <Button
                 onClick={() => {
                   setStates({ ...states, isLoading: true })
-                  ipcRenderer.send('saveFile', states.initialImage)
+                  ipcRenderer.send('saveFile', states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage)
                 }}
               >
                 Görüntüyü kaydet</Button>
@@ -877,7 +881,7 @@ function App() {
                     <Input
                       placeholder="axis"
                       type="number"
-                      value={sobel.axis}
+                      value={prewitt.axis}
                       onChange={(e) => setPrewitt({ ...prewitt, axis: parseFloat(e.target.value) })}
                     />
                   </div>
@@ -888,7 +892,7 @@ function App() {
                     <h6>Mode</h6>
                   </div>
                   <div className="inputs column">
-                    <select value={sobel.mode} onChange={(e) => setPrewitt({ ...prewitt, mode: e.target.value })}>
+                    <select value={prewitt.mode} onChange={(e) => setPrewitt({ ...prewitt, mode: e.target.value })}>
                       <option value="constant">constant</option>
                       <option value="reflect">reflect</option>
                       <option value="wrap">wrap</option>
@@ -907,7 +911,7 @@ function App() {
                     <Input
                       placeholder="cval"
                       type="number"
-                      value={sobel.cval}
+                      value={prewitt.cval}
                       onChange={(e) => setPrewitt({ ...prewitt, cval: parseFloat(e.target.value) })}
                     />
                   </div>
@@ -1668,7 +1672,7 @@ function App() {
 
                 <div className="x_to option columns">
                   <div className="option_title column has-text-centered">
-                    <h6>x_from</h6>
+                    <h6>x_to</h6>
                   </div>
                   <div className="inputs column">
                     <Input
@@ -1975,6 +1979,15 @@ function App() {
 
 
           </Accordion>
+
+
+          <Button
+            className="primary"
+            onClick={() => {
+              setStates({ ...states, isLoading: true })
+              ipcRenderer.send('social_media_effect', { image: states.processedImgSrc ? states.processedImgSrc : states.initialImage })
+            }}
+          >Ardışık filtreleme</Button>
 
           <Button
             className="primary"

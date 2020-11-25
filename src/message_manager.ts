@@ -1,5 +1,7 @@
-import { ipcMain } from "electron"
+import { ipcMain, dialog } from "electron"
 import * as fs from 'fs'
+import * as path from 'path'
+
 require('isomorphic-fetch');
 
 export const serverReq = (path: string, data: any) => {
@@ -33,19 +35,38 @@ export function MessageManager() {
         event.reply("rotate", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
 
   ipcMain.on('saveFile', (event, img) => {
     let base64Data = img.replace(/^data:image\/png;base64,/, "");
-    require("fs").writeFile("out.png", base64Data, 'base64', function (err: Error) {
-      if (err)
-        event.reply('error', err.message)
-
-      event.reply('saveFile', 'Görüntü etkin dizine "out.png" adında kaydedildi.')
+    dialog.showSaveDialog({
+      title: 'Select the File Path to save',
+      defaultPath: path.join(__dirname, '../assets/out.png'),
+      buttonLabel: 'Save',
+      filters: [
+        {
+          name: 'Text Files',
+          extensions: ['png', 'jpeg']
+        },],
+      properties: []
+    }).then(file => {
+      if (!file.canceled) {
+        fs.writeFile(file.filePath.toString(),
+          base64Data, 'base64', function (err) {
+            if (err)
+              event.reply('error', err.message)
+            event.reply('saveFile', `Görüntü ${file.filePath.toString()} dizinine kaydedildi.`)
+          });
+      }else{
+        event.reply('error', `Görüntü kaydetme iptal edildi.`)
+      }
+    }).catch(err => {
+      console.log(err)
     });
+
   })
 
 
@@ -60,7 +81,7 @@ export function MessageManager() {
         event.reply("swirl", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -76,7 +97,7 @@ export function MessageManager() {
         event.reply("hough_circle", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -91,7 +112,7 @@ export function MessageManager() {
         event.reply("integral_image", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -107,7 +128,7 @@ export function MessageManager() {
         event.reply("downscale", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -123,7 +144,7 @@ export function MessageManager() {
         event.reply("eq_hist", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -139,7 +160,7 @@ export function MessageManager() {
         event.reply("gamma", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -155,7 +176,7 @@ export function MessageManager() {
         event.reply("equalize_adapthist", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -171,7 +192,7 @@ export function MessageManager() {
         event.reply("show_histogram", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -187,7 +208,7 @@ export function MessageManager() {
         event.reply("window", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -203,7 +224,7 @@ export function MessageManager() {
         event.reply("median", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -219,7 +240,7 @@ export function MessageManager() {
         event.reply("crop", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -235,7 +256,7 @@ export function MessageManager() {
         event.reply("resize", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -251,7 +272,7 @@ export function MessageManager() {
         event.reply("affine_transform", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -267,7 +288,7 @@ export function MessageManager() {
         event.reply("sato", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -283,7 +304,7 @@ export function MessageManager() {
         event.reply("sobel", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -299,7 +320,7 @@ export function MessageManager() {
         event.reply("prewitt", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -315,7 +336,7 @@ export function MessageManager() {
         event.reply("laplace", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -331,7 +352,7 @@ export function MessageManager() {
         event.reply("unsharp_mask", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -347,7 +368,7 @@ export function MessageManager() {
         event.reply("meijering", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -363,7 +384,7 @@ export function MessageManager() {
         event.reply("scharr", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -379,7 +400,7 @@ export function MessageManager() {
         event.reply("hysteresis_threshold", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -395,7 +416,7 @@ export function MessageManager() {
         event.reply("erosion", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -411,7 +432,7 @@ export function MessageManager() {
         event.reply("dilation", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -427,7 +448,7 @@ export function MessageManager() {
         event.reply("opening", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -443,7 +464,7 @@ export function MessageManager() {
         event.reply("skeletonize", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -459,11 +480,11 @@ export function MessageManager() {
         event.reply("convex_hull", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
-  
+
   ipcMain.on('closing', async (event, res) => {
 
     await serverReq('/closing', JSON.stringify({
@@ -475,11 +496,11 @@ export function MessageManager() {
         event.reply("closing", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
-  
+
   ipcMain.on('white_tophat', async (event, res) => {
 
     await serverReq('/white_tophat', JSON.stringify({
@@ -491,7 +512,7 @@ export function MessageManager() {
         event.reply("white_tophat", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -507,7 +528,7 @@ export function MessageManager() {
         event.reply("black_tophat", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -523,11 +544,11 @@ export function MessageManager() {
         event.reply("thin", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
-  
+
   ipcMain.on('medial_axis', async (event, res) => {
 
     await serverReq('/medial_axis', JSON.stringify({
@@ -539,7 +560,7 @@ export function MessageManager() {
         event.reply("medial_axis", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
       })
 
   })
@@ -555,7 +576,23 @@ export function MessageManager() {
         event.reply("active_contour", res);
       })
       .catch(err => {
-        event.reply("err", err.message);
+        event.reply("error", err.message);
+      })
+
+  })
+
+  ipcMain.on('social_media_effect', async (event, res) => {
+
+    await serverReq('/social_media_effect', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("social_media_effect", res);
+      })
+      .catch(err => {
+        event.reply("error", err.message);
       })
 
   })

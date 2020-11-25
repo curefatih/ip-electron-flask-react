@@ -32,10 +32,6 @@ const ErrorPop: React.SFC<ErrorPopProps> = (props: ErrorPopProps) => {
         {showDetail ?
           <div
             className="detail"
-            style={{
-              height: "300px",
-              overflow: "auto",
-            }}
             ref={body}>
             {props.error}
           </div> : null

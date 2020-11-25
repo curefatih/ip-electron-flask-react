@@ -28,8 +28,6 @@ def run(img, **args):
     
     out_bytes = BytesIO()
     plt.savefig(out_bytes)
-    print(123)
-    # to_img
 
     return base64.b64encode(out_bytes.getvalue())
 
