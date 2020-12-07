@@ -596,4 +596,20 @@ export function MessageManager() {
       })
 
   })
+
+  ipcMain.on('scale_intensity', async (event, res) => {
+
+    await serverReq('/scale_intensity', JSON.stringify({
+      img: res.image,
+      parameters: res.args,
+    }))
+      .then(res => res.text())
+      .then(res => {
+        event.reply("scale_intensity", res);
+      })
+      .catch(err => {
+        event.reply("error", err.message);
+      })
+
+  })
 }

@@ -27,6 +27,9 @@ function isBase64(str: string) {
   }
 }
 
+type TScaleIntensity = 'image' | 'dtype' | '2-tuple';
+type TScaleValue = string | number[];
+
 function App() {
   const contentRef = React.useRef(null);
   const stateRef = React.useRef();
@@ -164,6 +167,15 @@ function App() {
     row: 100,
     column: 200,
     radius: 200,
+  })
+
+  const [scaleIntensity, setScaleIntensity] = React.useState({
+    in_type: 'image' as TScaleIntensity,
+    out_type: 'dtype' as TScaleIntensity,
+    values: {
+      in_range: [0, 0] as TScaleValue,
+      out_range: [0, 0] as TScaleValue
+    }
   })
 
   React.useEffect(() => {
@@ -353,13 +365,17 @@ function App() {
     ipcRenderer.on('active_contour', (event: any, base64: string) => {
       dataOrError(base64, "ACTIVE_CONTOUR")
     })
+
+    ipcRenderer.on('social_media_effect', (event: any, base64: string) => {
+      dataOrError(base64, "SOCIAL_MEDIA_EFFECT")
+    })
     /*****************************not working */
 
 
     /***************************** in progress */
 
-    ipcRenderer.on('social_media_effect', (event: any, base64: string) => {
-      dataOrError(base64, "SOCIAL_MEDIA_EFFECT")
+    ipcRenderer.on('scale_intensity', (event: any, base64: string) => {
+      dataOrError(base64, "SCALE_INTENSITY")
     })
 
   }, [])
@@ -518,6 +534,25 @@ function App() {
     setStates({ ...states, isLoading: true })
     ipcRenderer.send('active_contour', { args: activeContour, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
   }
+
+  const handleScaleIntensityButtonClick = () => {
+    setStates({ ...states, isLoading: true })
+    const args: any = {
+
+    }
+    if (scaleIntensity.in_type === '2-tuple') {
+      args['in_range'] = scaleIntensity.values.in_range;
+    } else {
+      args['in_range'] = scaleIntensity.in_type;
+    }
+    if (scaleIntensity.out_type === '2-tuple') {
+      args['out_range'] = scaleIntensity.values.out_range;
+    } else {
+      args['out_range'] = scaleIntensity.out_type;
+    }
+    ipcRenderer.send('scale_intensity', { args, image: states.processedImgSrc !== "" ? states.processedImgSrc : states.initialImage })
+  }
+
 
   return (
     <div
@@ -1922,6 +1957,90 @@ function App() {
                 className="secondary"
                 onClick={handleEqAdaptHistButtonClick}
               >Equalize Adapt Histogram(CLAHE)</Button>
+            </div>
+
+
+            <div className="scale_intensity">
+              <div className="options mb-3">
+
+                <div className="in_range option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>In range</h6>
+                  </div>
+                  <div className="inputs column">
+                    <select defaultValue={scaleIntensity.in_type} onChange={(e) => {
+                      const val = e.target.value as TScaleIntensity;
+                      setScaleIntensity({
+                        ...scaleIntensity,
+                        in_type: val,
+                        values: {
+                          ...scaleIntensity.values,
+                          in_range: val === "2-tuple" ? [0, 0] : val,
+                        }
+                      })
+                    }}>
+                      <option value="dtype">dtype</option>
+                      <option value="image">image</option>
+                      <option value="2-tuple">2-tuple</option>
+                    </select>
+                    {
+                      scaleIntensity.in_type === '2-tuple' ?
+                        <>
+                          <Input
+                            type="number"
+                            value={scaleIntensity.values.in_range[0]}
+                            onChange={(e) => setScaleIntensity({ ...scaleIntensity, values: { ...scaleIntensity.values, in_range: [parseInt(e.target.value), scaleIntensity.values.in_range[1] as number] } })} />
+                          <Input
+                            type="number"
+                            value={scaleIntensity.values.in_range[1]}
+                            onChange={(e) => setScaleIntensity({ ...scaleIntensity, values: { ...scaleIntensity.values, in_range: [scaleIntensity.values.in_range[0] as number, parseInt(e.target.value)] } })} />
+                        </> : null
+                    }
+                  </div>
+                </div>
+
+                <div className="out_range option columns">
+                  <div className="option_title column has-text-centered">
+                    <h6>Out range</h6>
+
+                  </div>
+                  <div className="inputs column">
+                    <select defaultValue={scaleIntensity.out_type} onChange={(e) => {
+                      const val = e.target.value as TScaleIntensity;
+                      setScaleIntensity({
+                        ...scaleIntensity,
+                        out_type: val,
+                        values: {
+                          ...scaleIntensity.values,
+                          out_range: val === "2-tuple" ? [0, 0] : val,
+                        }
+                      })
+                    }}>
+                      <option value="dtype">dtype</option>
+                      <option value="image">image</option>
+                      <option value="2-tuple">2-tuple</option>
+                    </select>
+                    {
+                      scaleIntensity.out_type === '2-tuple' ?
+                        <>
+                          <Input
+                            type="number"
+                            value={scaleIntensity.values.out_range[0]}
+                            onChange={(e) => setScaleIntensity({ ...scaleIntensity, values: { ...scaleIntensity.values, out_range: [parseFloat(e.target.value), scaleIntensity.values.out_range[1] as number] } })} />
+                          <Input
+                            type="number"
+                            value={scaleIntensity.values.out_range[1]}
+                            onChange={(e) => setScaleIntensity({ ...scaleIntensity, values: { ...scaleIntensity.values, out_range: [scaleIntensity.values.out_range[0] as number, parseFloat(e.target.value)] } })} />
+                        </> : null
+                    }
+                  </div>
+                </div>
+
+              </div>
+              <Button
+                className="secondary"
+                onClick={handleScaleIntensityButtonClick}
+              >Scale intensity</Button>
             </div>
 
           </Accordion>

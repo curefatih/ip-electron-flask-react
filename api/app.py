@@ -47,6 +47,7 @@ import image.morphology.medial_axis as medial_axis
 
 
 import image.exposure.gamma as gamma
+import image.exposure.rescale_intensity as rescale_intensity
 from skimage.exposure import equalize_adapthist
 
 import image.histogram.show_histogram as sh
@@ -119,10 +120,12 @@ def shutdown_server():
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
 
+
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
     shutdown_server()
     return 'Server shutting down...'
+
 
 @app.route("/rotate", methods=['GET', 'POST'])
 @cross_origin()
@@ -409,6 +412,7 @@ def black_tophat_route():
     img = black_tophat.run(img)
     return Response(img)
 
+
 @app.route("/medial_axis", methods=['GET', 'POST'])
 @cross_origin()
 def medial_axis_route():
@@ -417,7 +421,8 @@ def medial_axis_route():
     img = imread(imgdata, plugin='imageio')
     img = medial_axis.run(img)
     return Response(img)
-    
+
+
 @app.route("/active_contour", methods=['GET', 'POST'])
 @cross_origin()
 def active_contour_route():
@@ -428,10 +433,6 @@ def active_contour_route():
     return Response(img)
 
 
-#  -************* NOT WORKING after this
-
-#  -************* In Processs
-
 @app.route("/social_media_effect", methods=['GET', 'POST'])
 @cross_origin()
 def social_media_effect_route():
@@ -439,6 +440,20 @@ def social_media_effect_route():
     imgdata = base64.b64decode(opts['img'])
     img = imread(imgdata, plugin='imageio')
     img = social_media_effect.run(img)
+    return Response(img)
+
+#  -************* NOT WORKING after this
+
+#  -************* In Processs
+
+
+@app.route("/scale_intensity", methods=['GET', 'POST'])
+@cross_origin()
+def scale_intensity_route():
+    opts = request.get_json()
+    imgdata = base64.b64decode(opts['img'])
+    img = imread(imgdata, plugin='imageio')
+    img = rescale_intensity.run(img, **opts['parameters'])
     return Response(img)
 
 

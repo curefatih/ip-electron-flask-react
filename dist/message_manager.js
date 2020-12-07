@@ -732,6 +732,25 @@ function MessageManager() {
             }
         });
     }); });
+    electron_1.ipcMain.on('scale_intensity', function (event, res) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.serverReq('/scale_intensity', JSON.stringify({
+                        img: res.image,
+                        parameters: res.args
+                    }))
+                        .then(function (res) { return res.text(); })
+                        .then(function (res) {
+                        event.reply("scale_intensity", res);
+                    })["catch"](function (err) {
+                        event.reply("error", err.message);
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 }
 exports.MessageManager = MessageManager;
 //# sourceMappingURL=message_manager.js.map
